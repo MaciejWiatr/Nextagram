@@ -1,18 +1,22 @@
 import Link from "next/link";
-import { FiHome, FiHeart, FiCompass } from "react-icons/fi";
+import { FiHome, FiHeart, FiCompass, FiSearch } from "react-icons/fi";
 import Image from "next/image";
 import { Input } from "@chakra-ui/react";
 
 const Navbar = () => {
     return (
-        <nav className="h-16 flex flex-row justify-center items-center p-3 text-2xl shadow-md">
+        <nav className="h-14 flex flex-row justify-center items-center p-3 text-2xl shadow-md mb-2">
             <div className="md:w-1/2 flex flex-row justify-between items-center w-full">
                 <Link href="/">
                     <a>Nextagram</a>
                 </Link>
 
-                <div className="flex justify-center items-center w-24 md:w-auto">
-                    <Input placeholder="Search" size="sm"></Input>
+                <div className="flex justify-center items-center w-18 md:w-auto">
+                    <Input
+                        borderRadius="5px"
+                        placeholder="Search"
+                        size="sm"
+                    ></Input>
                 </div>
 
                 <ul className="flex flex-row">
