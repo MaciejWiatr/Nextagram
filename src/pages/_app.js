@@ -3,6 +3,9 @@ import { withReduxCookiePersist } from "next-redux-cookie-wrapper";
 import { Provider } from "react-redux";
 import makeStore from "../store";
 import "../styles/globals.css";
+import COOKIES from "cookies";
+
+if (process.env.NODE_ENV !== "production") console.log(COOKIES);
 
 function MyApp({ Component, pageProps, store }) {
     return (
