@@ -1,13 +1,14 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { withReduxCookiePersist } from "next-redux-cookie-wrapper";
 import { Provider } from "react-redux";
-import makeStore from "../store";
+import { wrapper } from "../store";
+import { useStore } from "react-redux";
 import "../styles/globals.css";
 import COOKIES from "cookies";
 
 if (process.env.NODE_ENV !== "production") console.log(COOKIES);
 
-function MyApp({ Component, pageProps, store }) {
+function MyApp({ Component, pageProps }) {
+    const store = useStore((state) => state);
     return (
         <Provider store={store}>
             <ChakraProvider>
@@ -17,10 +18,4 @@ function MyApp({ Component, pageProps, store }) {
     );
 }
 
-export default withReduxCookiePersist(makeStore, {
-    cookieConfig: {
-        expiration: {
-            default: 365 * 86400,
-        },
-    },
-})(MyApp);
+export default wrapper.withRedux(MyApp);
