@@ -28,6 +28,9 @@ function MyApp({ Component, pageProps, store }) {
 }
 
 export default withReduxCookiePersist(makeStore, {
+    persistConfig: {
+        whitelist: ["user"],
+    },
     cookieConfig: {
         expiration: {
             default: 365 * 86400,
