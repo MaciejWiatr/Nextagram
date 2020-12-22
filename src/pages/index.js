@@ -12,6 +12,13 @@ import { useRouter } from "next/dist/client/router";
 export default function Home() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!user.isAuthenticated) {
+            router.push("/login");
+        }
+    }, []);
 
     return (
         <Layout>
