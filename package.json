@@ -6,12 +6,14 @@
         "dev": "next dev",
         "build": "next build",
         "start": "node_modules/next/dist/bin/next start -p $PORT",
-        "start:normal": "next start"
+        "start:normal": "next start",
+        "build:analyze": "cross-env ANALYZE=true next build"
     },
     "dependencies": {
         "@chakra-ui/react": "^1.0.4",
         "@emotion/react": "^11.1.3",
         "@emotion/styled": "^11.0.0",
+        "@next/bundle-analyzer": "^10.0.3",
         "@reduxjs/toolkit": "^1.5.0",
         "autoprefixer": "^10.1.0",
         "axios": "^0.21.0",
@@ -27,5 +29,8 @@
         "react-icons": "^4.1.0",
         "react-redux": "^7.2.2",
         "tailwindcss": "^2.0.2"
+    },
+    "devDependencies": {
+        "cross-env": "^7.0.3"
     }
 }

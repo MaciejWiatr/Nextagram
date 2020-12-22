@@ -20,15 +20,16 @@ const Card = ({ user, likes, desc }) => {
                     width="30"
                     height="30"
                     className="rounded-full"
+                    alt="user image"
                 ></Image>
                 <Text className="ml-2">{user}</Text>
             </Box>
-            <img src="/sample_image.jpg"></img>
+            <img src="/sample_image.jpg" alt="post image"></img>
             <Box mt="2" pl="2" className="flex text-3xl">
-                <button className="mr-2">
+                <button name="heart button" className="mr-2">
                     <BiHeart />
                 </button>
-                <button>
+                <button name="comments button">
                     <BiMessageRounded />
                 </button>
             </Box>
@@ -41,8 +42,13 @@ const Card = ({ user, likes, desc }) => {
             </Text>
             <Divider />
             <Flex p="2">
-                <Input placeholder="Write comment" border="none" mr="1"></Input>
-                <Button>Publish</Button>
+                <Input
+                    name="comment input"
+                    placeholder="Write comment"
+                    border="none"
+                    mr="1"
+                ></Input>
+                <Button name="button publish">Publish</Button>
             </Flex>
         </Box>
     );

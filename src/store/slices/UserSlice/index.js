@@ -18,6 +18,13 @@ const userSlice = createSlice({
         setToken(state, action) {
             state.token = action.payload.token;
         },
+        logOut(state) {
+            state = {
+                isAuthenticated: false,
+                token: "",
+                user: {},
+            };
+        },
     },
 });
 

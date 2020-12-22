@@ -1,5 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { withReduxCookiePersist } from "next-redux-cookie-wrapper";
+import Head from "next/head";
 import { Provider } from "react-redux";
 import makeStore from "../store";
 import "../styles/globals.css";
@@ -12,6 +13,13 @@ if (typeof window === "undefined") {
 function MyApp({ Component, pageProps, store }) {
     return (
         <Provider store={store}>
+            <Head>
+                <title>Nextagram - A instagram clone</title>
+                <meta
+                    name="description"
+                    content="Nextagram is a instagram inspired platform for sharing your experiences via images!"
+                />
+            </Head>
             <ChakraProvider>
                 <Component {...pageProps} />
             </ChakraProvider>

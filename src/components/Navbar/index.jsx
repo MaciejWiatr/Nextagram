@@ -13,6 +13,7 @@ const Navbar = () => {
 
                 <div className="flex justify-center items-center w-18 md:w-auto">
                     <Input
+                        name="search input"
                         borderRadius="5px"
                         placeholder="Search"
                         size="sm"
@@ -49,6 +50,7 @@ const Navbar = () => {
                                     src="/user.png"
                                     width={20}
                                     height={20}
+                                    alt="user image"
                                 ></Image>
                             </a>
                         </Link>
