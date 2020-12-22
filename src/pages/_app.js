@@ -4,6 +4,10 @@ import { Provider } from "react-redux";
 import makeStore from "../store";
 import "../styles/globals.css";
 
+if (typeof window === "undefined") {
+    const ServerCookies = require("cookies");
+    console.log(ServerCookies);
+}
 
 function MyApp({ Component, pageProps, store }) {
     return (
