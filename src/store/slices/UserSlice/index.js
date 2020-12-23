@@ -19,16 +19,16 @@ const userSlice = createSlice({
             state.token = action.payload.token;
         },
         logOut(state) {
-            state = {
-                isAuthenticated: false,
-                token: "",
-                user: {},
-            };
+            console.log("logging out");
+            state.isAuthenticated = false;
+            state.token = "";
+            state.user = {};
+            console.log("logged out");
         },
     },
 });
 
-export const { setUser, setToken } = userSlice.actions;
+export const { setUser, setToken, logOut } = userSlice.actions;
 
 export const loginUser = (username, password) => async (dispatch) => {
     try {

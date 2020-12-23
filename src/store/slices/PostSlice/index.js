@@ -21,15 +21,21 @@ export const { setPosts } = postsSlice.actions;
 
 export const fetchPosts = (user) => async (dispatch) => {
     if (!user.isAuthenticated) {
-        console.log("Not authed");
-        const resp = await axios.get(apiURL + "posts/");
-        dispatch(setPosts(resp.data));
+        try {
+            const resp = await axios.get(apiURL + "posts/");
+            dispatch(setPosts(resp.data));
+        } catch (err) {
+            console.log("Not authenticated request has failed");
+        }
     } else {
-        console.log("Authed");
-        const resp = await axios.get(apiURL + "feed/", {
-            headers: { Authorization: `Token ${user.token}` },
-        });
-        dispatch(setPosts(resp.data));
+        try {
+            const resp = await axios.get(apiURL + "feed/", {
+                headers: { Authorization: `Token ${user.token}` },
+            });
+            dispatch(setPosts(resp.data));
+        } catch (err) {
+            console.log("Authenticated request has failed");
+        }
     }
 };
 
