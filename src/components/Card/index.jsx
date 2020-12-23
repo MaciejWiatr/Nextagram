@@ -62,9 +62,8 @@ const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
     return (
         <Box
             mt="10px"
-            w="md"
             maxW="md"
-            className="shadow-lg rounded overflow-hidden relative"
+            className="shadow-lg rounded overflow-hidden relative w-full"
         >
             <Box
                 h="50px"

@@ -1,10 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/dist/client/router";
-import { apiURL } from "../constants";
-import axios from "axios";
 import { fetchPosts } from "../store/slices/PostSlice";
 
 export default function Home() {
@@ -15,11 +13,11 @@ export default function Home() {
 
     useEffect(() => {
         dispatch(fetchPosts(user));
-    }, [user]);
+    }, [user.token]);
 
     return (
         <Layout>
-            <div className="w-full flex justify-center flex-col items-center">
+            <div className="w-full flex justify-center flex-col items-center pl-2 pr-2">
                 {posts
                     ? posts.map((post) => (
                           <Card
