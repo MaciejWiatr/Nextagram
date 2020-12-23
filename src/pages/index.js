@@ -30,6 +30,7 @@ export default function Home() {
                               img={post.image}
                               isLiked={post.is_liked}
                               postId={post.id}
+                              comments={post.comments}
                           />
                       ))
                     : null}

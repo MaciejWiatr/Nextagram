@@ -6,12 +6,16 @@ import { BiHeart, BiMessageRounded } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { apiURL } from "../../constants";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { fetchPosts } from "../../store/slices/PostSlice";
 
-const Card = ({ author, likes, desc, img, isLiked, postId }) => {
+const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
+    const [expanded, setExpanded] = useState(false);
+    const [localComments, setLocalComments] = useState(comments);
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
+    const commentInputRef = useRef(null);
+
     const handleLike = async () => {
         const userLike = likes.filter(({ author }) => {
             return author.id === user.user.id;
@@ -36,6 +40,23 @@ const Card = ({ author, likes, desc, img, isLiked, postId }) => {
             });
             dispatch(fetchPosts(user));
         }
+    };
+
+    const addComment = async () => {
+        const resp = await axios.post(
+            apiURL + `comments/`,
+            {
+                message: commentInputRef.current.value,
+                post: postId,
+            },
+            {
+                headers: {
+                    Authorization: `Token ${user.token}`,
+                },
+            }
+        );
+        const data = resp.data;
+        setLocalComments((coms) => [...coms, data]);
     };
 
     return (
@@ -83,21 +104,48 @@ const Card = ({ author, likes, desc, img, isLiked, postId }) => {
             <Text pl="2">
                 {likes.length} Like{likes.length > 1 ? "s" : ""}
             </Text>
-            <Text p="2" pt="0" fontSize=".9rem">
-                <b>{author.username}</b> {desc.substr(0, 100)}{" "}
-                <Link href="/">
-                    <a className="text-gray-200">Read more</a>
-                </Link>
+            <Text pl="2" pt="0" fontSize=".9rem">
+                <b>{author.username}</b> {expanded ? desc : desc.substr(0, 100)}{" "}
+                <button
+                    onClick={() => setExpanded((state) => !state)}
+                    className="text-gray-500"
+                >
+                    Read {expanded ? "less" : "more"}
+                </button>
             </Text>
+            <Link href="/">
+                <a className="pl-2 text-sm text-gray-500">See all comments</a>
+            </Link>
+            <ul className="pl-2 mb-2 text-sm">
+                {localComments
+                    ? localComments
+                          .slice(0, 3)
+                          .map(({ author, message, id }) => {
+                              return (
+                                  <li key={id}>
+                                      <b>{author.username}</b> {message}
+                                  </li>
+                              );
+                          })
+                    : null}
+            </ul>
             <Divider />
             <Flex p="2">
                 <Input
+                    ref={commentInputRef}
                     name="comment input"
                     placeholder="Write comment"
                     border="none"
                     mr="1"
                 ></Input>
-                <Button name="button publish">Publish</Button>
+                <Button
+                    name="button publish"
+                    onClick={() => {
+                        addComment();
+                    }}
+                >
+                    Publish
+                </Button>
             </Flex>
         </Box>
     );
