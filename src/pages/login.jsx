@@ -33,9 +33,11 @@ const Login = () => {
 
     return (
         <Layout>
-            <div className="w-full h-full  flex flex-col justify-center items-center">
+            <div className="w-full h-full flex flex-col justify-center items-center p-3">
                 <Box className="flex flex-col justify-center items-center text-3xl h-auto rounded shadow p-10">
-                    <Text className="mb-2">Log In</Text>
+                    <Text className="mb-2 w-full text-left font-semibold">
+                        Nextagram
+                    </Text>
                     <form onSubmit={handleSubmit}>
                         <Input
                             placeholder="Username"
