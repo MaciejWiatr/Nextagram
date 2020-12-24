@@ -7,7 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { apiURL } from "../../constants";
 import { useState, useRef } from "react";
-import { fetchPosts } from "../../store/slices/PostSlice";
+import {
+    fetchPosts,
+    fetchUpdatedPost,
+    updatePost,
+} from "../../store/slices/PostSlice";
 
 const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
     const [expanded, setExpanded] = useState(false);
@@ -30,7 +34,7 @@ const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
                     },
                 }
             );
-            dispatch(fetchPosts(user));
+            dispatch(fetchUpdatedPost(postId));
         } else {
             const userLikeId = userLike[0].id;
             await axios.delete(apiURL + `likes/${userLikeId}/`, {
@@ -38,7 +42,7 @@ const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
                     Authorization: `Token ${user.token}`,
                 },
             });
-            dispatch(fetchPosts(user));
+            dispatch(fetchUpdatedPost(postId));
         }
     };
 
@@ -93,6 +97,7 @@ const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
                     onClick={() => {
                         handleLike();
                     }}
+                    disabled={!user.isAuthenticated}
                 >
                     {isLiked ? <FaHeart fill="#c0392b" /> : <BiHeart />}
                 </button>
@@ -136,12 +141,14 @@ const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
                     placeholder="Write comment"
                     border="none"
                     mr="1"
+                    disabled={!user.isAuthenticated}
                 ></Input>
                 <Button
                     name="button publish"
                     onClick={() => {
                         addComment();
                     }}
+                    disabled={!user.isAuthenticated}
                 >
                     Publish
                 </Button>

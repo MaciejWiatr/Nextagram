@@ -12,14 +12,25 @@ const postsSlice = createSlice({
             state.postList = action.payload;
         },
         addPosts(state, action) {
-            state.posts = [...state.posts, ...action.payload];
+            state.postList = [...state.posts, ...action.payload];
+        },
+        updatePost(state, action) {
+            const { postId, updatedPost } = action.payload;
+            const postIndex = state.postList.findIndex(
+                (post) => post.id === postId
+            );
+            state.postList[postIndex] = {
+                ...state.postList[postIndex],
+                ...updatedPost,
+            };
         },
     },
 });
 
-export const { setPosts } = postsSlice.actions;
+export const { setPosts, updatePost } = postsSlice.actions;
 
-export const fetchPosts = (user) => async (dispatch) => {
+export const fetchPosts = () => async (dispatch, getState) => {
+    const { user } = getState();
     if (!user.isAuthenticated) {
         try {
             const resp = await axios.get(apiURL + "posts/");
@@ -37,6 +48,14 @@ export const fetchPosts = (user) => async (dispatch) => {
             console.log("Authenticated request has failed");
         }
     }
+};
+
+export const fetchUpdatedPost = (postId) => async (dispatch, getState) => {
+    const { user } = getState();
+    const resp = await axios.get(apiURL + `posts/${postId}`, {
+        headers: { Authorization: `Token ${user.token}` },
+    });
+    dispatch(updatePost({ postId, updatedPost: resp.data }));
 };
 
 export default postsSlice.reducer;
