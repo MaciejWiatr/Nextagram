@@ -4,10 +4,11 @@ import Head from "next/head";
 import { Provider } from "react-redux";
 import makeStore from "../store";
 import "../styles/globals.css";
+import "../styles/tailwind.css";
 
 if (typeof window === "undefined") {
     const ServerCookies = require("cookies");
-    console.log(ServerCookies);
+    ServerCookies.prototype;
 }
 
 function MyApp({ Component, pageProps, store }) {
