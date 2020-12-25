@@ -19,11 +19,9 @@ const userSlice = createSlice({
             state.token = action.payload.token;
         },
         logOut(state) {
-            console.log("logging out");
             state.isAuthenticated = false;
             state.token = "";
             state.user = {};
-            console.log("logged out");
         },
     },
 });
