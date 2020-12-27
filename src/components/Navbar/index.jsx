@@ -13,8 +13,10 @@ const Navbar = () => {
     const searchInputRef = useRef(null);
     const router = useRouter();
 
-    const handleSearch = () => {
-        router.push(`/search?q=${searchInputRef.current.value}`);
+    const handleSearch = (e) => {
+        e.preventDefault();
+        const val = searchInputRef.current.value;
+        router.push(`/search/?q=${val}`);
     };
 
     return (
@@ -24,7 +26,7 @@ const Navbar = () => {
                     <a href="/">Nextagram</a>
                 </Link>
                 <div className="flex justify-center items-center ml-1 mr-1 w-18 md:w-auto">
-                    <form onSubmit={() => handleSearch()}>
+                    <form onSubmit={(e) => handleSearch(e)}>
                         <Input
                             name="search input"
                             borderRadius="5px"
