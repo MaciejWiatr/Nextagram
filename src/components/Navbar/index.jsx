@@ -1,47 +1,57 @@
 import Link from "next/link";
-import { FiHome, FiHeart, FiCompass, FiSearch } from "react-icons/fi";
+import { FiHome, FiHeart, FiCompass } from "react-icons/fi";
 import Image from "next/image";
 import { Input } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import { useState } from "react";
-import { ProfileMenu } from "../ProfileMenu";
+import { useState, useRef } from "react";
+import ProfileMenu from "../ProfileMenu";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
     const user = useSelector((state) => state.user);
     const [menuOpen, setMenuOpen] = useState(false);
+    const searchInputRef = useRef(null);
+    const router = useRouter();
+
+    const handleSearch = () => {
+        router.push(`/search?q=${searchInputRef.current.value}`);
+    };
 
     return (
         <nav className="h-14 flex flex-row justify-center items-center p-3 text-2xl shadow-md mb-2 w-full">
             <div className="md:w-1/2 flex flex-row justify-between items-center w-full">
                 <Link href="/">
-                    <a>Nextagram</a>
+                    <a href="/">Nextagram</a>
                 </Link>
                 <div className="flex justify-center items-center ml-1 mr-1 w-18 md:w-auto">
-                    <Input
-                        name="search input"
-                        borderRadius="5px"
-                        placeholder="Search"
-                        size="sm"
-                    ></Input>
+                    <form onSubmit={() => handleSearch()}>
+                        <Input
+                            name="search input"
+                            borderRadius="5px"
+                            placeholder="Search"
+                            size="sm"
+                            ref={searchInputRef}
+                        />
+                    </form>
                 </div>
                 <ul className="flex flex-row">
                     <li className="flex justify-center items-center">
                         <Link href="/">
-                            <a>
+                            <a href="/">
                                 <FiHome />
                             </a>
                         </Link>
                     </li>
                     <li className="flex justify-center items-center ml-2">
                         <Link href="/">
-                            <a>
+                            <a href="/">
                                 <FiCompass />
                             </a>
                         </Link>
                     </li>
                     <li className="flex justify-center items-center ml-2">
                         <Link href="/">
-                            <a>
+                            <a href="/">
                                 <FiHeart />
                             </a>
                         </Link>
@@ -52,6 +62,7 @@ const Navbar = () => {
                             onClick={() => {
                                 setMenuOpen((state) => !state);
                             }}
+                            type="button"
                         >
                             <Image
                                 className="rounded-full"
@@ -63,7 +74,7 @@ const Navbar = () => {
                                 width={20}
                                 height={20}
                                 alt="user image"
-                            ></Image>
+                            />
                         </button>
                         {menuOpen ? <ProfileMenu /> : null}
                     </li>
