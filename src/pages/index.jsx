@@ -11,13 +11,15 @@ export default function Home() {
 
     useEffect(() => {
         dispatch(fetchPosts(user));
-    }, [user.token]);
+    }, [user]);
 
     return (
         <Layout>
-            <div className="w-full flex justify-center flex-col items-center pl-2 pr-2">
+            <div className="w-full flex justify-center flex-col items-center pl-2 pr-2 pb-3">
                 {posts
-                    ? posts.map((post) => <Card key={post.id} initialPost={post} />)
+                    ? posts.map((post) => (
+                          <Card key={post.id} initialPost={post} />
+                      ))
                     : null}
             </div>
         </Layout>
