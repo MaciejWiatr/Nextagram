@@ -73,7 +73,7 @@ const Card = ({ initialPost }) => {
         <Box
             mt="10px"
             maxW="md"
-            className="shadow-lg rounded overflow-hidden relative w-full"
+            className="shadow-lg rounded overflow-hidden relative w-full bg-white"
         >
             <Box h="50px">
                 <Link href={`/profile/${author.id}`}>
@@ -140,11 +140,17 @@ const Card = ({ initialPost }) => {
                 {localComments
                     ? localComments
                           .slice(0, 3)
-                          .map(({ author: commentAuthor, message, id: commentId }) => (
-                              <li key={commentId}>
-                                  <b>{commentAuthor.username}</b> {message}
-                              </li>
-                          ))
+                          .map(
+                              ({
+                                  author: commentAuthor,
+                                  message,
+                                  id: commentId,
+                              }) => (
+                                  <li key={commentId}>
+                                      <b>{commentAuthor.username}</b> {message}
+                                  </li>
+                              )
+                          )
                     : null}
             </ul>
             <Divider />
