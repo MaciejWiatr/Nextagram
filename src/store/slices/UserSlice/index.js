@@ -1,7 +1,7 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from "@reduxjs/toolkit";
-import { backendURL, loginUrl } from "../../../constants";
-import { apiURL } from "../../../constants";
 import axios from "axios";
+import { backendURL, loginUrl, apiURL } from "../../../constants";
 
 const userSlice = createSlice({
     name: "user",
@@ -18,6 +18,7 @@ const userSlice = createSlice({
         },
         setToken(state, action) {
             state.token = action.payload.token;
+            document.cookie = `token=${state.token}`;
         },
         updateUser(state, action) {
             state.user = {

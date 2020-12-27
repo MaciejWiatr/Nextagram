@@ -7,7 +7,7 @@ import { fetchUser } from "../../store/slices/UserSlice";
 import Card from "../../components/Card";
 import { apiURL } from "../../constants";
 import Layout from "../../components/Layout";
-import { ProfileSummary } from "../../components/ProfileSummary";
+import ProfileSummary from "../../components/ProfileSummary";
 
 const Profile = ({ initialProfile, posts }) => {
     const router = useRouter();

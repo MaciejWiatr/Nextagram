@@ -1,9 +1,9 @@
-import Layout from "../components/Layout";
 import { Box, Button, Input, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../store/slices/UserSlice";
 import { useRouter } from "next/dist/client/router";
+import { loginUser } from "../store/slices/UserSlice";
+import Layout from "../components/Layout";
 
 const Login = () => {
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -43,12 +43,12 @@ const Login = () => {
                             placeholder="Username"
                             ref={usernameInputRef}
                             className="mb-2"
-                        ></Input>
+                        />
                         <Input
                             placeholder="Password"
                             ref={passwordInputRef}
                             className="mb-2"
-                        ></Input>
+                        />
                         <Button
                             colorScheme="blue"
                             type="submit"
