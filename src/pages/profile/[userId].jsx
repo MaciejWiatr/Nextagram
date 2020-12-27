@@ -26,11 +26,6 @@ const Profile = ({ initialProfile, posts }) => {
         dispatch(fetchUser(user.user.id));
     }, [isFollowed]);
 
-    useEffect(() => {
-        // Refetch the active profile if user redirect to another profile page
-        setProfile((s) => initialProfile);
-    }, [userId]);
-
     const handleFollow = () => {
         if (isFollowed) {
             const followsWithoutProfile = user.user.profile.follows.filter(
@@ -113,6 +108,7 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
+            key: userId,
             initialProfile: profile,
             posts,
         },
