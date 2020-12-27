@@ -28,7 +28,7 @@ const Profile = ({ initialProfile, posts }) => {
 
     useEffect(() => {
         // Refetch the active profile if user redirect to another profile page
-        fetchProfile();
+        setProfile((s) => initialProfile);
     }, [userId]);
 
     const handleFollow = () => {
@@ -104,11 +104,11 @@ export async function getServerSideProps(context) {
     const { userId } = context.query;
 
     const profileResp = await axios.get(apiURL + `accounts/users/${userId}`);
+    const profile = profileResp.data;
     const postsResp = await axios.get(
         apiURL + `posts/?author__id=${profile.id}`
     );
 
-    const profile = profileResp.data;
     const posts = postsResp.data;
 
     return {
