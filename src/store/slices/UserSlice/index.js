@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { backendURL, loginUrl } from "../../../constants";
+import { apiURL } from "../../../constants";
 import axios from "axios";
 
 const userSlice = createSlice({
@@ -18,6 +19,12 @@ const userSlice = createSlice({
         setToken(state, action) {
             state.token = action.payload.token;
         },
+        updateUser(state, action) {
+            state.user = {
+                ...state.user,
+                ...action.payload.user,
+            };
+        },
         logOut(state) {
             state.isAuthenticated = false;
             state.token = "";
@@ -26,7 +33,7 @@ const userSlice = createSlice({
     },
 });
 
-export const { setUser, setToken, logOut } = userSlice.actions;
+export const { setUser, setToken, logOut, updateUser } = userSlice.actions;
 
 export const loginUser = (username, password) => async (dispatch) => {
     try {
@@ -36,6 +43,15 @@ export const loginUser = (username, password) => async (dispatch) => {
         });
         dispatch(setUser({ user: resp.data.user }));
         dispatch(setToken({ token: resp.data.token }));
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const fetchUser = (userId) => async (dispatch) => {
+    try {
+        const resp = await axios.get(apiURL + `accounts/users/${userId}`);
+        dispatch(updateUser({ user: resp.data }));
     } catch (err) {
         console.log(err);
     }

@@ -10,7 +10,6 @@ export const ProfileMenu = () => {
     const router = useRouter();
 
     const handleLogOut = () => {
-        console.log("Try to log out");
         dispatch(logOut());
     };
 
@@ -23,7 +22,7 @@ export const ProfileMenu = () => {
             <ul>
                 {user.isAuthenticated ? (
                     <li>
-                        <Link href="/">
+                        <Link href={`/profile/${user.user.id}`}>
                             <a className="flex flex-row items-center">
                                 <BiUserCircle />
                                 <span className="ml-1">Profile</span>
@@ -40,13 +39,13 @@ export const ProfileMenu = () => {
                             </a>
                         </button>
                     ) : (
-                            <button onClick={() => handleLogInRedir()}>
-                                <a className="flex flex-row items-center">
-                                    <BiLogIn />
-                                    <span className="ml-1">Log In</span>
-                                </a>
-                            </button>
-                        )}
+                        <button onClick={() => handleLogInRedir()}>
+                            <a className="flex flex-row items-center">
+                                <BiLogIn />
+                                <span className="ml-1">Log In</span>
+                            </a>
+                        </button>
+                    )}
                 </li>
             </ul>
         </div>

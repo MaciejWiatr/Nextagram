@@ -61,6 +61,7 @@ const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
         );
         const data = resp.data;
         setLocalComments((coms) => [...coms, data]);
+        commentInputRef.current.value = "";
     };
 
     return (
@@ -69,18 +70,19 @@ const Card = ({ author, likes, desc, img, isLiked, postId, comments }) => {
             maxW="md"
             className="shadow-lg rounded overflow-hidden relative w-full"
         >
-            <Box
-                h="50px"
-                className="flex flex-row justify-start items-center p-2"
-            >
-                <Image
-                    src={author.profile.photo}
-                    width="30"
-                    height="30"
-                    className="rounded-full"
-                    alt="user image"
-                ></Image>
-                <Text className="ml-2">{author.username}</Text>
+            <Box h="50px">
+                <Link href={`/profile/${author.id}`}>
+                    <a className="flex flex-row justify-start items-center p-2">
+                        <Image
+                            src={author.profile.photo}
+                            width="30"
+                            height="30"
+                            className="rounded-full"
+                            alt="user image"
+                        ></Image>
+                        <Text className="ml-2">{author.username}</Text>
+                    </a>
+                </Link>
             </Box>
             <Box className="relative h-64">
                 <Image

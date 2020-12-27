@@ -16,7 +16,6 @@ const Navbar = () => {
                 <Link href="/">
                     <a>Nextagram</a>
                 </Link>
-
                 <div className="flex justify-center items-center ml-1 mr-1 w-18 md:w-auto">
                     <Input
                         name="search input"
@@ -25,7 +24,6 @@ const Navbar = () => {
                         size="sm"
                     ></Input>
                 </div>
-
                 <ul className="flex flex-row">
                     <li className="flex justify-center items-center">
                         <Link href="/">
