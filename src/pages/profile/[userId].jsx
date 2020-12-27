@@ -78,16 +78,7 @@ const Profile = ({ initialProfile, posts }) => {
             <div className="w-full flex justify-center flex-col items-center pl-2 pr-2">
                 {posts
                     ? posts.map((post) => (
-                          <Card
-                              key={post.id}
-                              author={post.author}
-                              likes={post.likes}
-                              desc={post.description}
-                              img={post.image}
-                              isLiked={post.is_liked}
-                              postId={post.id}
-                              comments={post.comments}
-                          />
+                          <Card key={post.id} initialPost={post} />
                       ))
                     : "No Posts found"}
             </div>
