@@ -1,12 +1,12 @@
-import Layout from "../../components/Layout";
-import { apiURL } from "../../constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import Card from "../../components/Card";
 import { Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { fetchUser, updateUser } from "../../store/slices/UserSlice";
 import { useRouter } from "next/dist/client/router";
+import { fetchUser } from "../../store/slices/UserSlice";
+import Card from "../../components/Card";
+import { apiURL } from "../../constants";
+import Layout from "../../components/Layout";
 import { ProfileSummary } from "../../components/ProfileSummary";
 
 const Profile = ({ initialProfile, posts }) => {
@@ -26,13 +26,18 @@ const Profile = ({ initialProfile, posts }) => {
         dispatch(fetchUser(user.user.id));
     }, [isFollowed]);
 
+    const fetchProfile = async () => {
+        const resp = await axios.get(`${apiURL}accounts/users/${userId}`);
+        setProfile((prof) => ({ ...prof, ...resp.data }));
+    };
+
     const handleFollow = () => {
         if (isFollowed) {
             const followsWithoutProfile = user.user.profile.follows.filter(
                 (follow) => follow !== profile.id
             );
             axios.patch(
-                apiURL + `accounts/profiles/${user.user.profile.profile_id}/`,
+                `${apiURL}accounts/profiles/${user.user.profile.profile_id}/`,
                 {
                     follows: followsWithoutProfile,
                 },
@@ -40,11 +45,11 @@ const Profile = ({ initialProfile, posts }) => {
                     headers: { Authorization: `Token ${user.token}` },
                 }
             );
-            setFollowed((state) => false);
+            setFollowed(() => false);
             fetchProfile();
         } else {
             axios.patch(
-                apiURL + `accounts/profiles/${user.user.profile.profile_id}/`,
+                `${apiURL}accounts/profiles/${user.user.profile.profile_id}/`,
                 {
                     follows: [...user.user.profile.follows, profile.id],
                 },
@@ -52,14 +57,9 @@ const Profile = ({ initialProfile, posts }) => {
                     headers: { Authorization: `Token ${user.token}` },
                 }
             );
-            setFollowed((state) => true);
+            setFollowed(() => true);
             fetchProfile();
         }
-    };
-
-    const fetchProfile = async () => {
-        const resp = await axios.get(apiURL + `accounts/users/${userId}`);
-        setProfile((prof) => ({ ...prof, ...resp.data }));
     };
 
     return (
@@ -89,10 +89,10 @@ const Profile = ({ initialProfile, posts }) => {
 export async function getServerSideProps(context) {
     const { userId } = context.query;
 
-    const profileResp = await axios.get(apiURL + `accounts/users/${userId}`);
+    const profileResp = await axios.get(`${apiURL}accounts/users/${userId}`);
     const profile = profileResp.data;
     const postsResp = await axios.get(
-        apiURL + `posts/?author__id=${profile.id}`
+        `${apiURL}posts/?author__id=${profile.id}`
     );
 
     const posts = postsResp.data;
