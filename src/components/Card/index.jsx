@@ -13,7 +13,6 @@ const Card = ({ initialPost }) => {
         { author, likes, description, image, is_liked: isLiked, id, comments },
         setPost,
     ] = useState(initialPost);
-
     const [expanded, setExpanded] = useState(false);
     const [localComments, setLocalComments] = useState(comments);
     const user = useSelector((state) => state.user);
@@ -141,8 +140,8 @@ const Card = ({ initialPost }) => {
                 {localComments
                     ? localComments
                           .slice(0, 3)
-                          .map(({ author: commentAuthor, message, id }) => (
-                              <li key={id}>
+                          .map(({ author: commentAuthor, message, id: commentId }) => (
+                              <li key={commentId}>
                                   <b>{commentAuthor.username}</b> {message}
                               </li>
                           ))
