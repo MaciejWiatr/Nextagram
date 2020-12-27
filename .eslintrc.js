@@ -3,19 +3,20 @@ module.exports = {
         browser: true,
         node: true,
     },
-    extends: ['airbnb', 'prettier', 'prettier/react'],
+    extends: ["airbnb", "prettier", "prettier/react"],
     parserOptions: {
         ecmaFeatures: {
             jsx: true,
         },
         ecmaVersion: 12,
-        sourceType: 'module',
+        sourceType: "module",
     },
-    plugins: ['react'],
+    plugins: ["react"],
     rules: {
-        'react/react-in-jsx-scope': 'off',
-        indent: 'off',
-        'react/jsx-indent': 'off',
-        'react/jsx-indent-props': 'off',
+        "react/react-in-jsx-scope": "off",
+        indent: "off",
+        "react/jsx-indent": "off",
+        "react/jsx-indent-props": "off",
+        "react/prop-types": "off", // Disable props validation as later on i plan to rewrite project using typescript
     },
 };
