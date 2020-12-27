@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { BiUserCircle, BiLogOut, BiLogIn } from "react-icons/bi";
 import { useSelector, useDispatch } from "react-redux";
-import { logOut } from "../../store/slices/UserSlice";
 import { useRouter } from "next/dist/client/router";
+import { logOut } from "../../store/slices/UserSlice";
 
-export const ProfileMenu = () => {
+const ProfileMenu = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
     const router = useRouter();
@@ -22,8 +22,8 @@ export const ProfileMenu = () => {
             <ul>
                 {user.isAuthenticated ? (
                     <li>
-                        <Link href={`/profile/${user.user.id}`}>
-                            <a className="flex flex-row items-center">
+                        <Link href={`/profile/${user.user.id}`} passHref>
+                            <a href="/" className="flex flex-row items-center">
                                 <BiUserCircle />
                                 <span className="ml-1">Profile</span>
                             </a>
@@ -32,18 +32,22 @@ export const ProfileMenu = () => {
                 ) : null}
                 <li>
                     {user.isAuthenticated ? (
-                        <button onClick={() => handleLogOut()}>
-                            <a className="flex flex-row items-center">
-                                <BiLogOut />
-                                <span className="ml-1">Log Out</span>
-                            </a>
+                        <button
+                            onClick={() => handleLogOut()}
+                            type="button"
+                            className="flex flex-row items-center"
+                        >
+                            <BiLogOut />
+                            <span className="ml-1">Log Out</span>
                         </button>
                     ) : (
-                        <button onClick={() => handleLogInRedir()}>
-                            <a className="flex flex-row items-center">
-                                <BiLogIn />
-                                <span className="ml-1">Log In</span>
-                            </a>
+                        <button
+                            onClick={() => handleLogInRedir()}
+                            type="button"
+                            className="flex flex-row items-center"
+                        >
+                            <BiLogIn />
+                            <span className="ml-1">Log In</span>
                         </button>
                     )}
                 </li>
@@ -51,3 +55,5 @@ export const ProfileMenu = () => {
         </div>
     );
 };
+
+export default ProfileMenu;
