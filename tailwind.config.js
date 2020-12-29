@@ -1,14 +1,19 @@
 module.exports = {
-    purge: false,
-    darkMode: false, // or 'media' or 'class'
+    future: {
+        removeDeprecatedGapUtilities: true,
+        purgeLayersByDefault: true,
+    },
+    purge: [
+        "./src/components/**/*.{js,ts,jsx,tsx}",
+        "./src/pages/**/*.{js,ts,jsx,tsx}",
+    ],
     theme: {
-        minWidth: {
-            img: "20px",
+        extend: {
+            minWidth: {
+                img: "20px",
+            },
         },
-        extend: {},
     },
-    variants: {
-        extend: {},
-    },
+    variants: {},
     plugins: [],
 };
