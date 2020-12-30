@@ -4,8 +4,8 @@ import Image from "next/image";
 import { Input } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { useState, useRef } from "react";
-import ProfileMenu from "../ProfileMenu";
 import { useRouter } from "next/router";
+import ProfileMenu from "../ProfileMenu";
 
 const Navbar = () => {
     const user = useSelector((state) => state.user);
@@ -52,7 +52,7 @@ const Navbar = () => {
                         </Link>
                     </li>
                     <li className="flex justify-center items-center ml-2">
-                        <Link href="/">
+                        <Link href="/liked" passHref>
                             <a href="/">
                                 <FiHeart />
                             </a>
