@@ -10,7 +10,6 @@ import { Provider } from "react-redux";
 import { loadProgressBar } from "axios-progress-bar";
 import makeStore from "../store";
 import "../styles/globals.css";
-import "../styles/tailwind.css";
 import "../styles/vendor/progressBar.css";
 
 if (typeof window === "undefined") {

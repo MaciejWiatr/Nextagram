@@ -1,3 +1,5 @@
+@tailwind base;
+
 html,
 body {
     padding: 0;
@@ -44,3 +46,15 @@ button:focus {
 ::-webkit-scrollbar-thumb:hover {
     background-color: #a8bbbf;
 }
+
+/* Start purging... */
+@tailwind components;
+/* Stop purging. */
+
+/* Write your own custom component styles here */
+
+/* Start purging... */
+@tailwind utilities;
+/* Stop purging. */
+
+/* Your own custom utilities */
