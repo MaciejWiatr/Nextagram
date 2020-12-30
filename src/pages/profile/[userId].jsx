@@ -17,7 +17,7 @@ const Profile = ({ initialProfile, posts }) => {
     const [isFollowed, setFollowed] = useState(
         user.isAuthenticated
             ? user.user.profile.follows.includes(profile.id)
-            : null
+            : false
     );
     const { userId } = router.query;
     const dispatch = useDispatch();
@@ -31,12 +31,12 @@ const Profile = ({ initialProfile, posts }) => {
         setProfile((prof) => ({ ...prof, ...resp.data }));
     };
 
-    const handleFollow = () => {
+    const handleFollow = async () => {
         if (isFollowed) {
             const followsWithoutProfile = user.user.profile.follows.filter(
                 (follow) => follow !== profile.id
             );
-            axios.patch(
+            await axios.patch(
                 `${apiURL}accounts/profiles/${user.user.profile.profile_id}/`,
                 {
                     follows: followsWithoutProfile,
@@ -48,7 +48,7 @@ const Profile = ({ initialProfile, posts }) => {
             setFollowed(() => false);
             fetchProfile();
         } else {
-            axios.patch(
+            await axios.patch(
                 `${apiURL}accounts/profiles/${user.user.profile.profile_id}/`,
                 {
                     follows: [...user.user.profile.follows, profile.id],
