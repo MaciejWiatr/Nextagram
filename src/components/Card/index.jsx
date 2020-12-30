@@ -5,7 +5,7 @@ import { FaHeart } from "react-icons/fa";
 import { BiHeart, BiMessageRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { apiURL } from "../../constants";
 
 const Card = ({ initialPost }) => {
@@ -19,9 +19,14 @@ const Card = ({ initialPost }) => {
     const commentInputRef = useRef(null);
 
     const updatePost = async () => {
-        const resp = await axios.get(`${apiURL}posts/${id}`, {
-            headers: { Authorization: `Token ${user.token}` },
-        });
+        let resp;
+        if (user.token) {
+            resp = await axios.get(`${apiURL}posts/${id}`, {
+                headers: { Authorization: `Token ${user.token}` },
+            });
+        } else {
+            resp = await axios.get(`${apiURL}posts/${id}`);
+        }
         setPost(() => resp.data);
     };
 
@@ -68,6 +73,10 @@ const Card = ({ initialPost }) => {
         setLocalComments((coms) => [...coms, data]);
         commentInputRef.current.value = "";
     };
+
+    useEffect(() => {
+        updatePost();
+    }, [user]);
 
     return (
         <Box
