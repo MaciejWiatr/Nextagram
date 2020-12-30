@@ -1,6 +1,7 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from "@reduxjs/toolkit";
-import { apiURL } from "../../../constants";
 import axios from "axios";
+import { apiURL } from "../../../constants";
 
 const postsSlice = createSlice({
     name: "posts",
@@ -33,14 +34,14 @@ export const fetchPosts = () => async (dispatch, getState) => {
     const { user } = getState();
     if (!user.isAuthenticated) {
         try {
-            const resp = await axios.get(apiURL + "posts/");
+            const resp = await axios.get(`${apiURL}posts/`);
             dispatch(setPosts(resp.data));
         } catch (err) {
             console.log("Not authenticated request has failed");
         }
     } else {
         try {
-            const resp = await axios.get(apiURL + "feed/", {
+            const resp = await axios.get(`${apiURL}feed/`, {
                 headers: { Authorization: `Token ${user.token}` },
             });
             dispatch(setPosts(resp.data));
@@ -52,7 +53,7 @@ export const fetchPosts = () => async (dispatch, getState) => {
 
 export const fetchUpdatedPost = (postId) => async (dispatch, getState) => {
     const { user } = getState();
-    const resp = await axios.get(apiURL + `posts/${postId}`, {
+    const resp = await axios.get(`${apiURL}posts/${postId}`, {
         headers: { Authorization: `Token ${user.token}` },
     });
     dispatch(updatePost({ postId, updatedPost: resp.data }));
