@@ -37,25 +37,17 @@ const userSlice = createSlice({
 export const { setUser, setToken, logOut, updateUser } = userSlice.actions;
 
 export const loginUser = (username, password) => async (dispatch) => {
-    try {
-        const resp = await axios.post(loginUrl, {
-            username,
-            password,
-        });
-        dispatch(setUser({ user: resp.data.user }));
-        dispatch(setToken({ token: resp.data.token }));
-    } catch (err) {
-        console.log(err);
-    }
+    const resp = await axios.post(loginUrl, {
+        username,
+        password,
+    });
+    dispatch(setUser({ user: resp.data.user }));
+    dispatch(setToken({ token: resp.data.token }));
 };
 
 export const fetchUser = (userId) => async (dispatch) => {
-    try {
-        const resp = await axios.get(apiURL + `accounts/users/${userId}`);
-        dispatch(updateUser({ user: resp.data }));
-    } catch (err) {
-        console.log(err);
-    }
+    const resp = await axios.get(`${apiURL}accounts/users/${userId}`);
+    dispatch(updateUser({ user: resp.data }));
 };
 
 export default userSlice.reducer;
