@@ -1,12 +1,11 @@
 import Image from "next/image";
-import { BiPencil } from "react-icons/bi";
-import { Button } from "@chakra-ui/react";
+import { Button, Switch } from "@chakra-ui/react";
 
 const ProfileSummary = ({ profile, isUser, isFollowed, handleFollow }) => (
-    <div className="w-full flex justify-center p-2 mt-5">
-        <div className="w-full md:w-7/12 md:h-36 max-w-2xl  flex flex-col md:flex-row ">
+    <div className="w-full flex justify-center mt-5">
+        <div className="w-full md:h-36 max-w-2xl  flex flex-col md:flex-row ">
             <div className="w-full md:w-1/3 h-full relative flex justify-center items-center p-5 md:p-0 min-w-20 ">
-                <div className="min-w-20 h-24 w-24 md:h-36 md:w-36 relative rounded-full overflow-hidden">
+                <div className="min-w-20 h-24 w-24 md:h-36 md:w-36 min-w-img-lg relative rounded-full overflow-hidden">
                     <Image
                         layout="fill"
                         objectFit="cover"
@@ -18,11 +17,10 @@ const ProfileSummary = ({ profile, isUser, isFollowed, handleFollow }) => (
                 <div className="text-3xl mb-2 flex items-center">
                     <h1>{profile.username}</h1>{" "}
                     {isUser ? (
-                        <button type="button">
-                            <span className="text-2xl">
-                                <BiPencil />
-                            </span>
-                        </button>
+                        <div className="ml-2 flex flex-row items-end">
+                            <Switch id="email-alerts" />
+                            <p className="text-lg ml-1 mb-0.5">Edit</p>
+                        </div>
                     ) : (
                         <Button
                             className="ml-2"
