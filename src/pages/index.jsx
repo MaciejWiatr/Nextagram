@@ -11,7 +11,7 @@ export default function Home() {
 
     useEffect(() => {
         dispatch(fetchPosts(user));
-    }, [user]);
+    }, [user.token]);
 
     return (
         <Layout>
