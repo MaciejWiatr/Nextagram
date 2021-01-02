@@ -74,10 +74,6 @@ const Card = ({ initialPost }) => {
         commentInputRef.current.value = "";
     };
 
-    useEffect(() => {
-        updatePost();
-    }, [user]);
-
     return (
         <Box
             mt="10px"
