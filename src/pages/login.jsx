@@ -1,4 +1,12 @@
-import { Box, Button, Input, Text } from "@chakra-ui/react";
+import {
+    Alert,
+    AlertIcon,
+    Box,
+    Button,
+    Input,
+    Text,
+    useToast,
+} from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/dist/client/router";
@@ -12,6 +20,7 @@ const Login = () => {
     const passwordInputRef = useRef(null);
     const [error, setError] = useState(null);
     const router = useRouter();
+    const toast = useToast();
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -19,15 +28,23 @@ const Login = () => {
         }
     }, []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const username = usernameInputRef.current.value;
         const password = passwordInputRef.current.value;
         try {
-            dispatch(loginUser(username, password));
+            await dispatch(loginUser(username, password));
             router.push("/");
+            toast({
+                position: "bottom-left",
+                title: "Logged in.",
+                description: "You successfully logged in.",
+                status: "success",
+                duration: 4500,
+                isClosable: true,
+            });
         } catch (err) {
-            setError(err);
+            setError("Login has failed");
         }
     };
 
@@ -38,7 +55,7 @@ const Login = () => {
                     <Text className="mb-2 w-full text-left font-semibold">
                         Nextagram
                     </Text>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={(e) => handleSubmit(e)}>
                         <Input
                             placeholder="Username"
                             ref={usernameInputRef}
@@ -58,9 +75,10 @@ const Login = () => {
                         </Button>
                     </form>
                     {error ? (
-                        <Box className="bg-red-300 p-2 rounded text-sm">
+                        <Alert status="error" className="rounded mt-2 text-lg">
+                            <AlertIcon />
                             {error}
-                        </Box>
+                        </Alert>
                     ) : null}
                 </Box>
             </div>

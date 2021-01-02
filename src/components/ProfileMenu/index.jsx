@@ -2,12 +2,14 @@ import Link from "next/link";
 import { BiUserCircle, BiLogOut, BiLogIn } from "react-icons/bi";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/dist/client/router";
+import { useToast } from "@chakra-ui/react";
 import { logOut } from "../../store/slices/UserSlice";
 
 const ProfileMenu = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
     const router = useRouter();
+    const toast = useToast();
 
     const handleLogOut = () => {
         dispatch(logOut());
@@ -33,7 +35,17 @@ const ProfileMenu = () => {
                 <li>
                     {user.isAuthenticated ? (
                         <button
-                            onClick={() => handleLogOut()}
+                            onClick={() => {
+                                handleLogOut();
+                                toast({
+                                    position: "bottom-left",
+                                    title: "Logged out.",
+                                    description: "You successfully logged out.",
+                                    status: "success",
+                                    duration: 4500,
+                                    isClosable: true,
+                                });
+                            }}
                             type="button"
                             className="flex flex-row items-center"
                         >
