@@ -11,6 +11,7 @@ module.exports = {
         extend: {
             minWidth: {
                 img: "20px",
+                "img-lg": "6rem",
             },
         },
     },
