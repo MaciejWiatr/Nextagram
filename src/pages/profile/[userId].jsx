@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Box, Button, FormLabel, Input, Textarea } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/dist/client/router";
 import { fetchUser } from "../../store/slices/UserSlice";
 import Card from "../../components/Card";
@@ -9,7 +9,50 @@ import { apiURL } from "../../constants";
 import Layout from "../../components/Layout";
 import ProfileSummary from "../../components/ProfileSummary";
 
-const Profile = ({ initialProfile, posts }) => {
+const NewPostForm = ({ updatePosts, fetchProfile }) => {
+    const user = useSelector((state) => state.user);
+    const formRef = useRef(null);
+
+    const uploadForm = async (formData) => {
+        try {
+            await axios({
+                method: "post",
+                url: `${apiURL}posts/`,
+                data: formData,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Token ${user.token}`,
+                },
+            });
+            updatePosts();
+            fetchProfile();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(formRef.current);
+        uploadForm(formData);
+        e.target.reset();
+    };
+
+    return (
+        <Box className="w-full p-3 rounded bg-white shadow mt-2 mb-2" maxW="md">
+            <h2 className="text-xl">Add new post</h2>
+            <form ref={formRef} onSubmit={handleSubmit}>
+                <FormLabel>Image</FormLabel>
+                <Input type="file" className="p-1" name="image" />
+                <FormLabel>Description</FormLabel>
+                <Textarea name="description" />
+                <Button type="submit">Upload</Button>
+            </form>
+        </Box>
+    );
+};
+
+const Profile = ({ initialProfile, posts: initialPosts }) => {
     const router = useRouter();
     const [profile, setProfile] = useState(initialProfile);
     const user = useSelector((state) => state.user);
@@ -19,7 +62,9 @@ const Profile = ({ initialProfile, posts }) => {
             ? user.user.profile.follows.includes(profile.id)
             : false
     );
+    const [posts, setPosts] = useState(initialPosts);
     const { userId } = router.query;
+    const [showForm, setShowForm] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -29,6 +74,13 @@ const Profile = ({ initialProfile, posts }) => {
     const fetchProfile = async () => {
         const resp = await axios.get(`${apiURL}accounts/users/${userId}`);
         setProfile((prof) => ({ ...prof, ...resp.data }));
+    };
+
+    const updatePosts = async () => {
+        const postsResp = await axios.get(
+            `${apiURL}posts/?author__id=${profile.id}`
+        );
+        setPosts(postsResp.data);
     };
 
     const handleFollow = async () => {
@@ -64,23 +116,46 @@ const Profile = ({ initialProfile, posts }) => {
 
     return (
         <Layout>
-            <ProfileSummary
-                isUser={isUser}
-                isFollowed={isFollowed}
-                handleFollow={handleFollow}
-                profile={profile}
-            />
-            {isUser ? (
-                <div className="flex justify-center">
-                    <Button colorScheme="green">Add post</Button>
+            <div className="flex flex-row overflow-hidden w-full">
+                <div className="md:w-1/4 overflow-hidden" />
+                <div className="w-full md:w-2/4 overflow-hidden flex flex-col items-center p-2">
+                    <ProfileSummary
+                        isUser={isUser}
+                        isFollowed={isFollowed}
+                        handleFollow={handleFollow}
+                        profile={profile}
+                    />
+
+                    {isUser ? (
+                        <>
+                            <div className="flex justify-center flex-col">
+                                <Button
+                                    colorScheme={showForm ? `pink` : `teal`}
+                                    onClick={() =>
+                                        setShowForm((state) => !state)
+                                    }
+                                    variant="outline"
+                                >
+                                    {showForm ? `Close` : `New Post`}
+                                </Button>
+                            </div>
+                            {showForm ? (
+                                <NewPostForm
+                                    updatePosts={updatePosts}
+                                    fetchProfile={fetchProfile}
+                                />
+                            ) : null}
+                        </>
+                    ) : null}
+                    <div className="w-full flex justify-center flex-col items-center pl-2 pr-2">
+                        {posts
+                            ? posts.map((post) => (
+                                  <Card key={post.id} initialPost={post} />
+                              ))
+                            : "No Posts found"}
+                    </div>
                 </div>
-            ) : null}
-            <div className="w-full flex justify-center flex-col items-center pl-2 pr-2">
-                {posts
-                    ? posts.map((post) => (
-                          <Card key={post.id} initialPost={post} />
-                      ))
-                    : "No Posts found"}
+                <div className="md:w-1/4 overflow-hidden" />
             </div>
         </Layout>
     );
