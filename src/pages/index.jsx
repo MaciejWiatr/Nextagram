@@ -9,6 +9,10 @@ export default function Home() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
 
+    const updatePosts = () => {
+        dispatch(fetchPosts(user));
+    };
+
     useEffect(() => {
         dispatch(fetchPosts(user));
     }, [user.token]);
@@ -18,7 +22,11 @@ export default function Home() {
             <div className="w-full flex justify-center flex-col items-center pl-2 pr-2 pb-3">
                 {posts
                     ? posts.map((post) => (
-                          <Card key={post.id} initialPost={post} />
+                          <Card
+                              key={post.id}
+                              initialPost={post}
+                              updateParentPostList={updatePosts}
+                          />
                       ))
                     : null}
             </div>
