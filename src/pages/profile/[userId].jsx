@@ -142,6 +142,7 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
                             isFollowed={isFollowed}
                             handleFollow={handleFollow}
                             profile={profile}
+                            fetchProfile={fetchProfile}
                         />
 
                         {isUser ? (
