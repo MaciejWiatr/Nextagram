@@ -3,12 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import { BiHeart, BiMessageRounded } from "react-icons/bi";
+import { BsThreeDots } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import { apiURL } from "../../constants";
 
-const Card = ({ initialPost }) => {
+const Card = ({ initialPost, updateParentPostList }) => {
     const [
         { author, likes, description, image, is_liked: isLiked, id, comments },
         setPost,
@@ -17,6 +18,7 @@ const Card = ({ initialPost }) => {
     const [localComments, setLocalComments] = useState(comments);
     const user = useSelector((state) => state.user);
     const commentInputRef = useRef(null);
+    const [showOptions, setShowOptions] = useState(false);
 
     const updatePost = async () => {
         let resp;
@@ -56,6 +58,10 @@ const Card = ({ initialPost }) => {
         }
     };
 
+    useEffect(() => {
+        updatePost();
+    }, []);
+
     const addComment = async () => {
         const resp = await axios.post(
             `${apiURL}comments/`,
@@ -74,30 +80,80 @@ const Card = ({ initialPost }) => {
         commentInputRef.current.value = "";
     };
 
+    const handleDelete = async () => {
+        if (!user.token) {
+            return;
+        }
+        if (user.user.id !== author.id) {
+            return;
+        }
+        await axios.delete(`${apiURL}posts/${id}/`, {
+            headers: {
+                Authorization: `Token ${user.token}`,
+            },
+        });
+        updateParentPostList();
+    };
+
     return (
         <Box
             mt="10px"
             maxW="md"
             className="shadow-lg rounded overflow-hidden relative w-full bg-white"
         >
-            <Box h="50px">
-                <Link href={`/profile/${author.id}`}>
-                    <a
-                        className="flex flex-row justify-start items-center p-2"
-                        href="/"
-                    >
-                        <Image
-                            src={author.profile.photo}
-                            width="30"
-                            height="30"
-                            className="rounded-full"
-                            alt="user image"
-                        />
-                        <Text className="ml-2">{author.username}</Text>
-                    </a>
-                </Link>
+            <Box h="50px" className="w-full flex">
+                <div className="flex-grow">
+                    <Link href={`/profile/${author.id}`}>
+                        <a
+                            className="flex flex-row justify-start items-center p-2"
+                            href="/"
+                        >
+                            <Image
+                                src={author.profile.photo}
+                                width="30"
+                                height="30"
+                                className="rounded-full"
+                                alt="user image"
+                            />
+                            <Text className="ml-2">{author.username}</Text>
+                        </a>
+                    </Link>
+                </div>
+                {user.user.id === author.id ? (
+                    <div className="flex items-center p-2 relative">
+                        <Button
+                            borderRadius="30px"
+                            w="40px"
+                            p="0"
+                            h="40px"
+                            onClick={() => setShowOptions((state) => !state)}
+                        >
+                            <BsThreeDots />
+                        </Button>
+                        {showOptions ? (
+                            <div className="absolute right-2 top-10 z-50 bg-white rounded shadow p-2 pl-3 pr-3">
+                                <ul className="text-left font-normal">
+                                    <li>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDelete()}
+                                        >
+                                            Delete
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button">Edit</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        ) : null}
+                    </div>
+                ) : null}
             </Box>
-            <Box className="relative h-64">
+            <Box
+                className="relative h-64 cursor-pointer"
+                onDoubleClick={() => handleLike()}
+            >
                 <Image
                     src={image}
                     alt="post image"
@@ -136,7 +192,7 @@ const Card = ({ initialPost }) => {
                     Read {expanded ? "less" : "more"}
                 </button>
             </Text>
-            <Link href="/">
+            <Link href={`/post/${id}`}>
                 <a href="/" className="pl-2 text-sm text-gray-500">
                     See all comments
                 </a>
