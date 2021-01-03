@@ -13,6 +13,10 @@ module.exports = {
                 img: "20px",
                 "img-lg": "6rem",
             },
+            zIndex: {
+                modal: "999",
+                max: "9999",
+            },
         },
     },
     variants: {},
