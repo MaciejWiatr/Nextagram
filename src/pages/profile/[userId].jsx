@@ -1,13 +1,27 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Button, FormLabel, Input, Textarea } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    FormLabel,
+    Input,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    Textarea,
+} from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/dist/client/router";
+import { BsFillGridFill } from "react-icons/bs";
+import { FaList } from "react-icons/fa";
+import PostList from "../../components/PostList";
 import { fetchUser } from "../../store/slices/UserSlice";
-import Card from "../../components/Card";
 import { apiURL } from "../../constants";
 import Layout from "../../components/Layout";
 import ProfileSummary from "../../components/ProfileSummary";
+import PostGrid from "../../components/PostGrid";
 
 const NewPostForm = ({ updatePosts, fetchProfile }) => {
     const user = useSelector((state) => state.user);
@@ -39,7 +53,7 @@ const NewPostForm = ({ updatePosts, fetchProfile }) => {
     };
 
     return (
-        <Box className="w-full p-3 rounded bg-white shadow mt-2 mb-2" maxW="md">
+        <Box className="w-full p-3 rounded bg-white shadow mt-2 mb-2">
             <h2 className="text-xl">Add new post</h2>
             <form ref={formRef} onSubmit={handleSubmit}>
                 <FormLabel>Image</FormLabel>
@@ -78,9 +92,12 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
 
     const updatePosts = async () => {
         const postsResp = await axios.get(
-            `${apiURL}posts/?author__id=${profile.id}`
+            `${apiURL}posts/?author__id=${profile.id}`,
+            {
+                headers: { Authorization: `Token ${user.token}` },
+            }
         );
-        setPosts(postsResp.data);
+        setPosts(() => postsResp.data);
     };
 
     const handleFollow = async () => {
@@ -117,45 +134,69 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
     return (
         <Layout>
             <div className="flex flex-row overflow-hidden w-full">
-                <div className="md:w-1/4 overflow-hidden" />
-                <div className="w-full md:w-2/4 overflow-hidden flex flex-col items-center p-2">
-                    <ProfileSummary
-                        isUser={isUser}
-                        isFollowed={isFollowed}
-                        handleFollow={handleFollow}
-                        profile={profile}
-                    />
+                <div className="md:w-1/5 overflow-hidden" />
+                <div className="w-full md:w-3/5 overflow-hidden flex justify-center">
+                    <div className="flex w-full max-w-3xl flex-col items-center p-2">
+                        <ProfileSummary
+                            isUser={isUser}
+                            isFollowed={isFollowed}
+                            handleFollow={handleFollow}
+                            profile={profile}
+                        />
 
-                    {isUser ? (
-                        <>
-                            <div className="flex justify-center flex-col">
-                                <Button
-                                    colorScheme={showForm ? `pink` : `teal`}
-                                    onClick={() =>
-                                        setShowForm((state) => !state)
-                                    }
-                                    variant="outline"
-                                >
-                                    {showForm ? `Close` : `New Post`}
-                                </Button>
-                            </div>
-                            {showForm ? (
-                                <NewPostForm
-                                    updatePosts={updatePosts}
-                                    fetchProfile={fetchProfile}
-                                />
-                            ) : null}
-                        </>
-                    ) : null}
-                    <div className="w-full flex justify-center flex-col items-center pl-2 pr-2">
-                        {posts
-                            ? posts.map((post) => (
-                                  <Card key={post.id} initialPost={post} />
-                              ))
-                            : "No Posts found"}
+                        {isUser ? (
+                            <>
+                                <div className="flex justify-center flex-col">
+                                    <Button
+                                        colorScheme="white"
+                                        textColor="black"
+                                        className="shadow-md"
+                                        onClick={() =>
+                                            setShowForm((state) => !state)
+                                        }
+                                    >
+                                        {showForm ? `Close` : `New Post`}
+                                    </Button>
+                                </div>
+                                {showForm ? (
+                                    <NewPostForm
+                                        updatePosts={updatePosts}
+                                        fetchProfile={fetchProfile}
+                                    />
+                                ) : null}
+                            </>
+                        ) : null}
+                        <Tabs
+                            isFitted
+                            variant="enclosed"
+                            className="w-full mt-5"
+                        >
+                            <TabList mb="1em">
+                                <Tab>
+                                    <BsFillGridFill />
+                                </Tab>
+                                <Tab>
+                                    <FaList />
+                                </Tab>
+                            </TabList>
+                            <TabPanels>
+                                <TabPanel>
+                                    <PostGrid
+                                        posts={posts}
+                                        updateParentPostList={updatePosts}
+                                    />
+                                </TabPanel>
+                                <TabPanel>
+                                    <PostList
+                                        posts={posts}
+                                        updateParentPostList={updatePosts}
+                                    />
+                                </TabPanel>
+                            </TabPanels>
+                        </Tabs>
                     </div>
                 </div>
-                <div className="md:w-1/4 overflow-hidden" />
+                <div className="md:w-1/5 overflow-hidden" />
             </div>
         </Layout>
     );
