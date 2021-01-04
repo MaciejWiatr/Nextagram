@@ -82,6 +82,9 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        if (!user.user.isAuthenticated) {
+            return;
+        }
         dispatch(fetchUser(user.user.id));
     }, [isFollowed]);
 
