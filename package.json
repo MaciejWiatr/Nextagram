@@ -8,8 +8,7 @@
         "start": "node_modules/next/dist/bin/next start -p $PORT",
         "start:normal": "next start",
         "build:analyze": "cross-env ANALYZE=true next build",
-        "kickstart": "next build && next start",
-        "debug": "cross-env NODE_OPTIONS='--inspect' next dev"
+        "kickstart": "next build && next start"
     },
     "dependencies": {
         "@chakra-ui/react": "^1.0.4",
