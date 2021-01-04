@@ -9,12 +9,12 @@ export default function Home() {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
 
-    const updatePosts = () => {
-        dispatch(fetchPosts(user));
+    const updatePosts = async () => {
+        await dispatch(fetchPosts(user));
     };
 
-    useEffect(() => {
-        dispatch(fetchPosts(user));
+    useEffect(async () => {
+        await updatePosts();
     }, [user.token]);
 
     return (
