@@ -46,8 +46,12 @@ export const loginUser = (username, password) => async (dispatch) => {
 };
 
 export const fetchUser = (userId) => async (dispatch) => {
-    const resp = await axios.get(`${apiURL}accounts/users/${userId}`);
-    dispatch(updateUser({ user: resp.data }));
+    try {
+        const resp = await axios.get(`${apiURL}accounts/users/${userId}`);
+        dispatch(updateUser({ user: resp.data }));
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 export default userSlice.reducer;
