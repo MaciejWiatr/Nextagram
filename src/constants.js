@@ -1,5 +1,5 @@
-export const backendURL = "http://127.0.0.1:8000";
+export const backendURL = process.env.BACKEND_URL || "http://127.0.0.1:8000";
 
-export const apiURL = "http://127.0.0.1:8000/api/";
+export const apiURL = `${backendURL}/api/`;
 
 export const loginUrl = `${apiURL}accounts/login/`;

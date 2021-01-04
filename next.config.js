@@ -4,6 +4,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 module.exports = withBundleAnalyzer({
     images: {
-        domains: ["127.0.0.1"],
+        domains: ["", "127.0.0.1", "local.wiatr.tech"],
     },
 });
