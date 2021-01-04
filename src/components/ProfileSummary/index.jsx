@@ -32,10 +32,13 @@ const ProfileSummary = ({
     };
 
     const handleProfileUpdate = async () => {
+        if (!user.isAuthenticated) {
+            return;
+        }
         await axios.patch(
             `${apiURL}accounts/users/${user.user.id}/`,
             {
-                username: usernameInputRef.current.value,
+                username: usernameInputRef.current.value.replaceAll(" ", "_"),
             },
             {
                 headers: { Authorization: `Token ${user.token}` },
@@ -60,12 +63,23 @@ const ProfileSummary = ({
             <div className="w-full md:h-36 max-w-2xl  flex flex-col md:flex-row ">
                 <div className="w-full md:w-1/3 h-full relative flex justify-center items-center p-5 md:p-0 min-w-20 ">
                     <div className="min-w-20 h-24 w-24 md:h-36 md:w-36 min-w-img-lg relative rounded-full overflow-hidden">
-                        <img
-                            src={profileImage}
-                            alt="profile_pic"
-                            ref={profileImgRef}
-                            className="object-cover"
-                        />
+                        {editing ? (
+                            <img
+                                src={profileImage}
+                                alt="profile_pic"
+                                ref={profileImgRef}
+                                className="object-cover h-full"
+                            />
+                        ) : (
+                            <Image
+                                src={profileImage}
+                                alt="profile_pic"
+                                layout="fill"
+                                objectFit="cover"
+                                quality="60"
+                                className="object-cover h-full"
+                            />
+                        )}
                         {editing ? (
                             <div className="absolute top-0 left-0 w-full h-full">
                                 <form ref={imageFormRef}>
