@@ -5,7 +5,7 @@ import { Input } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import { useState, useRef } from "react";
 import { useRouter } from "next/router";
-import ProfileMenu from "../ProfileMenu";
+import NavbarMenu from "../NavbarMenu";
 
 const Navbar = () => {
     const user = useSelector((state) => state.user);
@@ -78,7 +78,7 @@ const Navbar = () => {
                                 alt="user image"
                             />
                         </button>
-                        {menuOpen ? <ProfileMenu /> : null}
+                        {menuOpen ? <NavbarMenu /> : null}
                     </li>
                 </ul>
             </div>

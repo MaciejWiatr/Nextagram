@@ -1,22 +1,17 @@
 import Link from "next/link";
 import { BiUserCircle, BiLogOut, BiLogIn } from "react-icons/bi";
+import { AiOutlineUserAdd } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from "next/dist/client/router";
 import { useToast } from "@chakra-ui/react";
 import { logOut } from "../../store/slices/UserSlice";
 
-const ProfileMenu = () => {
+const NavbarMenu = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
-    const router = useRouter();
     const toast = useToast();
 
     const handleLogOut = () => {
         dispatch(logOut());
-    };
-
-    const handleLogInRedir = () => {
-        router.push("/login");
     };
 
     return (
@@ -32,8 +27,9 @@ const ProfileMenu = () => {
                         </Link>
                     </li>
                 ) : null}
-                <li>
-                    {user.isAuthenticated ? (
+
+                {user.isAuthenticated ? (
+                    <li>
                         <button
                             onClick={() => {
                                 handleLogOut();
@@ -52,20 +48,36 @@ const ProfileMenu = () => {
                             <BiLogOut />
                             <span className="ml-1">Log Out</span>
                         </button>
-                    ) : (
-                        <button
-                            onClick={() => handleLogInRedir()}
-                            type="button"
-                            className="flex flex-row items-center"
-                        >
-                            <BiLogIn />
-                            <span className="ml-1">Log In</span>
-                        </button>
-                    )}
-                </li>
+                    </li>
+                ) : (
+                    <>
+                        <li>
+                            <Link href="/login" passHref>
+                                <a
+                                    className="flex flex-row items-center"
+                                    href="/"
+                                >
+                                    <BiLogIn />
+                                    <span className="ml-1">Log In</span>
+                                </a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/register" passHref>
+                                <a
+                                    className="flex flex-row items-center"
+                                    href="/"
+                                >
+                                    <AiOutlineUserAdd />
+                                    <span className="ml-1">Register</span>
+                                </a>
+                            </Link>
+                        </li>
+                    </>
+                )}
             </ul>
         </div>
     );
 };
 
-export default ProfileMenu;
+export default NavbarMenu;
