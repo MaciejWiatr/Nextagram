@@ -13,33 +13,52 @@ import { useRouter } from "next/dist/client/router";
 import { loginUser } from "../store/slices/UserSlice";
 import Layout from "../components/Layout";
 import Link from "next/link";
+import axios from "axios";
+import { apiURL } from "../constants";
 
 const Login = () => {
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
     const dispatch = useDispatch();
-    const usernameInputRef = useRef(null);
-    const passwordInputRef = useRef(null);
+    const registerFormRef = useRef(null);
+    const usernameRef = useRef(null);
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
     const [error, setError] = useState(null);
     const router = useRouter();
     const toast = useToast();
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push("/");
+        }
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const username = usernameInputRef.current.value;
-        const password = passwordInputRef.current.value;
+        console.log({
+            username: usernameRef.current.value,
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+        });
+
         try {
-            await dispatch(loginUser(username, password));
+            await axios.post(`${apiURL}accounts/users/`, {
+                username: usernameRef.current.value,
+                email: emailRef.current.value,
+                password: passwordRef.current.value,
+            });
             toast({
                 position: "bottom-left",
-                title: "Logged in.",
-                description: "You successfully logged in.",
+                title: "Registered",
+                description:
+                    "You have successfully registered. Now you can log in!",
                 status: "success",
                 duration: 4500,
                 isClosable: true,
             });
-            router.push("/");
+            router.push("/login");
         } catch (err) {
-            setError("Login has failed");
+            setError("Registration has failed");
         }
     };
 
@@ -50,16 +69,24 @@ const Login = () => {
                     <Text className="mb-2 w-full text-left font-semibold">
                         Nextagram
                     </Text>
-                    <form onSubmit={(e) => handleSubmit(e)}>
+                    <form
+                        ref={registerFormRef}
+                        onSubmit={(e) => handleSubmit(e)}
+                    >
                         <Input
                             placeholder="Username"
-                            ref={usernameInputRef}
                             className="mb-2"
+                            ref={usernameRef}
+                        />
+                        <Input
+                            placeholder="Email"
+                            className="mb-2"
+                            ref={emailRef}
                         />
                         <Input
                             placeholder="Password"
-                            ref={passwordInputRef}
                             className="mb-2"
+                            ref={passwordRef}
                         />
                         <div className="flex justify-between items-center">
                             <Button
@@ -67,11 +94,11 @@ const Login = () => {
                                 type="submit"
                                 className="w-full"
                             >
-                                Log In
+                                Register
                             </Button>
-                            <Link href="/register" passHref>
+                            <Link href="/login" passHref>
                                 <a href="/" className="text-base text-blue-600">
-                                    Register
+                                    Login
                                 </a>
                             </Link>
                         </div>
