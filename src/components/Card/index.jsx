@@ -103,7 +103,7 @@ const Card = ({ initialPost, updateParentPostList }) => {
         >
             <Box h="50px" className="w-full flex">
                 <div className="flex-grow">
-                    <Link href={`/profile/${author.id}`}>
+                    <Link href={`/profile/${author.id}`} passHref>
                         <a
                             className="flex flex-row justify-start items-center p-2"
                             href="/"
@@ -114,6 +114,7 @@ const Card = ({ initialPost, updateParentPostList }) => {
                                 height="30"
                                 className="rounded-full"
                                 alt="user image"
+                                quality="10"
                             />
                             <Text className="ml-2">{author.username}</Text>
                         </a>
