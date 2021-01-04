@@ -1,4 +1,3 @@
-import { flexbox } from "@chakra-ui/react";
 import Image from "next/image";
 import { useState } from "react";
 import { BiHeart, BiMessageRounded } from "react-icons/bi";
@@ -48,7 +47,12 @@ const PostGridElement = ({ post, updateParentPostList }) => {
                         <BiMessageRounded />
                     </p>
                 </div>
-                <Image src={post.image} layout="fill" objectFit="cover" />
+                <Image
+                    src={post.image}
+                    layout="fill"
+                    quality="20"
+                    objectFit="cover"
+                />
             </div>
             <Modal
                 isOpen={modalIsOpen}
