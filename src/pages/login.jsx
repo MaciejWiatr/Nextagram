@@ -87,4 +87,10 @@ const Login = () => {
     );
 };
 
+export async function getStaticProps() {
+    return {
+        props: {},
+    };
+}
+
 export default Login;

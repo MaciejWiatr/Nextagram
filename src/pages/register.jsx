@@ -7,16 +7,14 @@ import {
     Text,
     useToast,
 } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useRef, useState } from "react";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { apiURL } from "../constants";
 
-const Login = () => {
-    const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+const Register = () => {
     const registerFormRef = useRef(null);
     const usernameRef = useRef(null);
     const emailRef = useRef(null);
@@ -24,12 +22,6 @@ const Login = () => {
     const [error, setError] = useState(null);
     const router = useRouter();
     const toast = useToast();
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            router.push("/");
-        }
-    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -113,4 +105,10 @@ const Login = () => {
     );
 };
 
-export default Login;
+export async function getStaticProps() {
+    return {
+        props: {},
+    };
+}
+
+export default Register;
