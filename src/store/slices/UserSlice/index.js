@@ -13,7 +13,13 @@ const userSlice = createSlice({
     reducers: {
         setUser(state, action) {
             state.user = action.payload.user;
-            state.user.profile.photo = backendURL + state.user.profile.photo;
+            if (
+                !process.env.NODE_ENV ||
+                process.env.NODE_ENV === "development"
+            ) {
+                state.user.profile.photo =
+                    backendURL + state.user.profile.photo;
+            }
             state.isAuthenticated = true;
         },
         setToken(state, action) {
