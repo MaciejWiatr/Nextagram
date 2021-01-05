@@ -209,13 +209,20 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
 export async function getServerSideProps(context) {
     const { userId } = context.query;
 
-    const profileResp = await axios.get(`${apiURL}accounts/users/${userId}`);
-    const profile = profileResp.data;
-    const postsResp = await axios.get(
-        `${apiURL}posts/?author__id=${profile.id}`
-    );
+    console.time("SSR Profile");
+    const fetchUserProfile = axios.get(`${apiURL}accounts/users/${userId}`);
 
+    const fetchProfilePosts = axios.get(`${apiURL}posts/?author__id=${userId}`);
+
+    const [profileResp, postsResp] = await Promise.all([
+        fetchUserProfile,
+        fetchProfilePosts,
+    ]);
+
+    const profile = profileResp.data;
     const posts = postsResp.data;
+
+    console.timeEnd("SSR Profile");
 
     return {
         props: {
