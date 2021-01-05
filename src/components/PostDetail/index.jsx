@@ -86,7 +86,7 @@ const PostDetail = ({ initialPost }) => {
     }, []);
 
     return (
-        <Box className="shadow-lg rounded overflow-hidden relative w-full md:w-3/4 max-w-5xl bg-white flex flex-col items-stretch md:flex-row md:justify-center h-3/4 md:h-2/3 border">
+        <Box className="shadow-lg rounded md:overflow-hidden relative w-full md:w-3/4 max-w-5xl bg-white flex flex-col items-stretch md:flex-row md:justify-center  md:h-2/3 border">
             <PostImage
                 handleLike={handleLike}
                 image={image}
@@ -180,7 +180,7 @@ export default PostDetail;
 
 function PostImage({ handleLike, image }) {
     return (
-        <div className="flex flex-col h-full border-b md:border-none w-full">
+        <div className="flex flex-col md:h-full border-b md:border-none w-full h-56">
             <Box
                 className="relative h-full cursor-pointer"
                 onDoubleClick={() => handleLike()}
