@@ -65,20 +65,22 @@ const PostGridElement = ({ post, updateParentPostList }) => {
                         justifyContent: "center",
                         alignItems: "center",
                         background: "rgba(0,0,0,0.5)",
+                        padding: 0,
                     },
                     content: {
                         zIndex: 99999999,
                         border: "none",
-                        padding: 0,
+                        padding: "0 !important",
                         inset: "initial",
                         display: "flex",
-                        width: "400px",
+                        width: "80%",
+                        maxWidth: "400px",
                         background: "none",
                         justifyContent: "center",
                     },
                 }}
             >
-                <div className="w-3/4 md:w-full">
+                <div className="w-full">
                     <Card
                         initialPost={post}
                         updateParentPostList={updateParentPostList}
