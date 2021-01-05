@@ -207,7 +207,7 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
 };
 
 export async function getServerSideProps(context) {
-    context.res.setHeader("Cache-Control","s-maxage=10");
+    context.res.setHeader("Cache-Control", "s-maxage=10");
     const { userId } = context.query;
 
     console.time("SSR Profile Fetch");
@@ -219,10 +219,15 @@ export async function getServerSideProps(context) {
         urls.map((url) => fetch(url))
     ).then((resp) => Promise.all(resp.map((r) => r.json())));
 
+    console.timeEnd("SSR Profile Fetch");
     const profile = profileResp;
     const posts = postsResp;
 
-    console.timeEnd("SSR Profile Fetch");
+    if (profile.detail === "Not found.") {
+        return {
+            notFound: true,
+        };
+    }
 
     return {
         props: {
