@@ -207,6 +207,7 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
 };
 
 export async function getServerSideProps(context) {
+    context.res.setHeader("s-maxage=10");
     const { userId } = context.query;
 
     console.time("SSR Profile Fetch");
