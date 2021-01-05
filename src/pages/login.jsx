@@ -7,15 +7,14 @@ import {
     Text,
     useToast,
 } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useRouter } from "next/dist/client/router";
+import Link from "next/link";
 import { loginUser } from "../store/slices/UserSlice";
 import Layout from "../components/Layout";
-import Link from "next/link";
 
 const Login = () => {
-    const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
     const dispatch = useDispatch();
     const usernameInputRef = useRef(null);
     const passwordInputRef = useRef(null);
