@@ -12,13 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import axios from "axios";
-import { loginUser } from "../store/slices/UserSlice";
 import Layout from "../components/Layout";
 import { apiURL } from "../constants";
 
 const Login = () => {
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-    const dispatch = useDispatch();
     const registerFormRef = useRef(null);
     const usernameRef = useRef(null);
     const emailRef = useRef(null);
