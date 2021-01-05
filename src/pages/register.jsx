@@ -10,10 +10,10 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/dist/client/router";
-import { loginUser } from "../store/slices/UserSlice";
-import Layout from "../components/Layout";
 import Link from "next/link";
 import axios from "axios";
+import { loginUser } from "../store/slices/UserSlice";
+import Layout from "../components/Layout";
 import { apiURL } from "../constants";
 
 const Login = () => {
