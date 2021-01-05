@@ -10,7 +10,7 @@
 
 > To start this project you need [Backend](https://github.com/MaciejWiatr/DRF-Instagram-Clone/tree/develop) running in the background
 
-### 🏠 [Homepage](Coming soon!)
+### 🏠 [Homepage](https://nextagram.vercel.app/)
 
 ## Install
 
