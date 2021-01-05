@@ -8,9 +8,9 @@
 
 > Nextagram is a instagram clone written in Next.js and Django Rest Framework
 
-> To start this project you need [Backend](https://github.com/MaciejWiatr/DRF-Instagram-Clone/tree/develop) running in the background
+> To start this project locally you need [Backend](https://github.com/MaciejWiatr/DRF-Instagram-Clone/tree/develop) running in the background
 
-### 🏠 [Homepage](Coming soon!)
+### 🏠 [Homepage](https://nextagram.vercel.app/)
 
 ## Install
 
