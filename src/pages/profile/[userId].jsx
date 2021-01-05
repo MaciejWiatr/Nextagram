@@ -17,7 +17,7 @@ import { useRouter } from "next/dist/client/router";
 import { BsFillGridFill } from "react-icons/bs";
 import { FaList } from "react-icons/fa";
 import PostList from "../../components/PostList";
-import { fetchUser } from "../../store/slices/UserSlice";
+import { fetchUser, updateUser } from "../../store/slices/UserSlice";
 import { apiURL } from "../../constants";
 import Layout from "../../components/Layout";
 import ProfileSummary from "../../components/ProfileSummary";
@@ -74,7 +74,7 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
     const [isFollowed, setFollowed] = useState(
         user.isAuthenticated
             ? user.user.profile.follows.includes(profile.id)
-            : false
+            : false,
     );
     const [posts, setPosts] = useState(initialPosts);
     const { userId } = router.query;
@@ -98,7 +98,7 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
             `${apiURL}posts/?author__id=${profile.id}`,
             {
                 headers: { Authorization: `Token ${user.token}` },
-            }
+            },
         );
         setPosts(() => postsResp.data);
     };
@@ -106,7 +106,7 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
     const handleFollow = async () => {
         if (isFollowed) {
             const followsWithoutProfile = user.user.profile.follows.filter(
-                (follow) => follow !== profile.id
+                (follow) => follow !== profile.id,
             );
             await axios.patch(
                 `${apiURL}accounts/profiles/${user.user.profile.profile_id}/`,
@@ -115,7 +115,7 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
                 },
                 {
                     headers: { Authorization: `Token ${user.token}` },
-                }
+                },
             );
             setFollowed(() => false);
             fetchProfile();
@@ -127,11 +127,12 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
                 },
                 {
                     headers: { Authorization: `Token ${user.token}` },
-                }
+                },
             );
             setFollowed(() => true);
             fetchProfile();
         }
+        dispatch(fetchUser(user.user.id));
     };
 
     return (
@@ -216,7 +217,7 @@ export async function getServerSideProps(context) {
         `${apiURL}posts/?author__id=${userId}`,
     ];
     const [profileResp, postsResp] = await Promise.all(
-        urls.map((url) => fetch(url))
+        urls.map((url) => fetch(url)),
     ).then((resp) => Promise.all(resp.map((r) => r.json())));
 
     console.timeEnd("SSR Profile Fetch");
