@@ -30,6 +30,7 @@ button:focus {
 
 /* custom scrollbar */
 ::-webkit-scrollbar {
+    height: 8px;
     width: 8px;
 }
 
