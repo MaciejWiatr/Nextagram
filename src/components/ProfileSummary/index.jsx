@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import Image from "next/image";
-import { Button, Input, Switch } from "@chakra-ui/react";
+import { Button, Input, Switch, Textarea } from "@chakra-ui/react";
 import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiUpload } from "react-icons/bi";
@@ -22,11 +22,15 @@ const ProfileSummary = ({
     const profileImgRef = useRef(null);
     const imageFormRef = useRef(null);
     const [profileImage, setProfileImage] = useState(profile.profile.photo);
+    const [usernameState, setUsernameState] = useState(profile.username);
+    const [descriptionState, setDescriptionState] = useState(
+        profile.profile.description,
+    );
     const dispatch = useDispatch();
 
-    const loadFile = function (event) {
+    const loadFile = (event) => {
         setProfileImage(URL.createObjectURL(event.target.files[0]));
-        profileImgRef.current.onload = function () {
+        profileImgRef.current.onload = () => {
             URL.revokeObjectURL(profileImgRef.current.src); // free memory
         };
     };
@@ -42,10 +46,11 @@ const ProfileSummary = ({
             },
             {
                 headers: { Authorization: `Token ${user.token}` },
-            }
+            },
         );
         const formData = new FormData(imageFormRef.current);
-        const resp = await axios({
+        formData.append("description", descriptionState);
+        await axios({
             method: "PATCH",
             url: `${apiURL}accounts/profiles/${user.user.id}/`,
             data: formData,
@@ -68,7 +73,7 @@ const ProfileSummary = ({
                                 src={profileImage}
                                 alt="profile_pic"
                                 ref={profileImgRef}
-                                className="object-cover h-full"
+                                className="object-cover h-full w-full"
                             />
                         ) : (
                             <Image
@@ -83,7 +88,11 @@ const ProfileSummary = ({
                         {editing ? (
                             <div className="absolute top-0 left-0 w-full h-full">
                                 <form ref={imageFormRef}>
-                                    <label className="w-full h-full absolute text-center flex flex-col justify-center items-center text-3xl bg-green-300 bg-opacity-50 text-white cursor-pointer">
+                                    <label
+                                        className="w-full h-full absolute text-center flex flex-col justify-center items-center text-3xl bg-green-300 bg-opacity-50 text-white cursor-pointer
+                                     transition hover:bg-green-600 hover:bg-opacity-50
+                                    "
+                                    >
                                         <BiUpload />
                                         <input
                                             type="file"
@@ -107,6 +116,10 @@ const ProfileSummary = ({
                                 <Input
                                     placeholder={profile.username}
                                     mr="1"
+                                    value={usernameState}
+                                    onChange={(e) =>
+                                        setUsernameState(usernameState)
+                                    }
                                     ref={usernameInputRef}
                                 />
                             </div>
@@ -155,7 +168,18 @@ const ProfileSummary = ({
                             <b>{profile.profile.follows.length}</b> Follows
                         </p>
                     </div>
-                    <p>{profile.profile.description}</p>
+                    <p>
+                        {!editing ? (
+                            profile.profile.description
+                        ) : (
+                            <Input
+                                value={descriptionState}
+                                onChange={(e) =>
+                                    setDescriptionState(e.target.value)
+                                }
+                            />
+                        )}
+                    </p>
                 </div>
             </div>
         </div>
