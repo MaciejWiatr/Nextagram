@@ -15,6 +15,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/dist/client/router";
 import { BsFillGridFill } from "react-icons/bs";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 import { FaList } from "react-icons/fa";
 import PostList from "../../components/PostList";
 import { fetchUser, updateUser } from "../../store/slices/UserSlice";
@@ -26,6 +27,8 @@ import PostGrid from "../../components/PostGrid";
 const NewPostForm = ({ updatePosts, fetchProfile }) => {
     const user = useSelector((state) => state.user);
     const formRef = useRef(null);
+    const [postImage, setPostImage] = useState();
+    const postImagePreview = useRef(null);
 
     const uploadForm = async (formData) => {
         try {
@@ -52,12 +55,36 @@ const NewPostForm = ({ updatePosts, fetchProfile }) => {
         e.target.reset();
     };
 
+    const loadFile = (event) => {
+        setPostImage(URL.createObjectURL(event.target.files[0]));
+        postImagePreview.current.onload = () => {
+            URL.revokeObjectURL(postImagePreview.current.src); // free memory
+        };
+    };
+
     return (
         <Box className="w-full p-3 rounded bg-white shadow mt-2 mb-2">
             <h2 className="text-xl">Add new post</h2>
             <form ref={formRef} onSubmit={handleSubmit}>
                 <FormLabel>Image</FormLabel>
-                <Input type="file" className="p-1" name="image" />
+                <label className="w-full h-10 flex justify-center items-center bg-gray-200 rounded hover:bg-gray-300 cursor-pointer">
+                    <AiOutlinePlusCircle />
+                    <Input
+                        type="file"
+                        className="p-1 hidden"
+                        name="image"
+                        onChange={loadFile}
+                    />
+                </label>
+                {postImagePreview ? (
+                    <img
+                        ref={postImagePreview}
+                        src={postImage}
+                        alt="preview"
+                        className="rounded-b"
+                    />
+                ) : null}
+
                 <FormLabel>Description</FormLabel>
                 <Textarea name="description" />
                 <Button type="submit">Upload</Button>
