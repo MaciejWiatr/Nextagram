@@ -59,6 +59,7 @@ const Login = () => {
                             placeholder="Password"
                             ref={passwordInputRef}
                             className="mb-2"
+                            type="password"
                         />
                         <div className="flex justify-between items-center">
                             <Button
