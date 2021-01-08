@@ -13,6 +13,7 @@ import Link from "next/link";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { apiURL } from "../constants";
+import Validator from "../validator";
 
 const Register = () => {
     const registerFormRef = useRef(null);
@@ -25,18 +26,20 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({
+        const data = {
             username: usernameRef.current.value,
             email: emailRef.current.value,
             password: passwordRef.current.value,
-        });
+        };
+        const { valid, err } = Validator.validate("register", data);
+
+        if (!valid) {
+            setError(err);
+            return;
+        }
 
         try {
-            await axios.post(`${apiURL}accounts/users/`, {
-                username: usernameRef.current.value,
-                email: emailRef.current.value,
-                password: passwordRef.current.value,
-            });
+            await axios.post(`${apiURL}accounts/users/`, data);
             toast({
                 position: "bottom-left",
                 title: "Registered",

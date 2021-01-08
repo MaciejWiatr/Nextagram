@@ -1,12 +1,21 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import Image from "next/image";
-import { Button, Input, Switch, Textarea } from "@chakra-ui/react";
+import {
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Button,
+    Input,
+    Switch,
+} from "@chakra-ui/react";
 import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiUpload } from "react-icons/bi";
 import axios from "axios";
 import { apiURL } from "../../constants";
 import { fetchUser } from "../../store/slices/UserSlice";
+import Validator from "../../validator";
 
 const ProfileSummary = ({
     profile,
@@ -24,8 +33,9 @@ const ProfileSummary = ({
     const [profileImage, setProfileImage] = useState(profile.profile.photo);
     const [usernameState, setUsernameState] = useState(profile.username);
     const [descriptionState, setDescriptionState] = useState(
-        profile.profile.description,
+        profile.profile.description || "",
     );
+    const [error, setError] = useState("");
     const dispatch = useDispatch();
 
     const loadFile = (event) => {
@@ -39,6 +49,19 @@ const ProfileSummary = ({
         if (!user.isAuthenticated) {
             return;
         }
+        const data = {
+            username: usernameState,
+            description: descriptionState,
+        };
+
+        const { valid, err } = Validator.validate("profile", data);
+
+        if (!valid) {
+            setError(err);
+            return;
+        }
+
+        setError("");
         await axios.patch(
             `${apiURL}accounts/users/${user.user.id}/`,
             {
@@ -59,13 +82,23 @@ const ProfileSummary = ({
                 "Content-Type": "multipart/form-data",
             },
         });
+
         fetchProfile();
         dispatch(fetchUser(user.user.id));
     };
 
     return (
-        <div className="w-full flex justify-center mt-5">
-            <div className="w-full md:h-36 max-w-2xl  flex flex-col md:flex-row ">
+        <div className="w-full flex flex-col justify-center mt-5">
+            <div className="w-full">
+                {error ? (
+                    <Alert className="w-full rounded mb-2" status="error">
+                        <AlertIcon />
+                        <AlertTitle>Error!</AlertTitle>
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                ) : null}
+            </div>
+            <div className="w-full md:h-36 max-w-2xl flex flex-col md:flex-row ">
                 <div className="w-full md:w-1/3 h-full relative flex justify-center items-center p-5 md:p-0 min-w-20 ">
                     <div className="min-w-20 h-24 w-24 md:h-36 md:w-36 min-w-img-lg relative rounded-full overflow-hidden">
                         {editing ? (
@@ -118,7 +151,7 @@ const ProfileSummary = ({
                                     mr="1"
                                     value={usernameState}
                                     onChange={(e) =>
-                                        setUsernameState(usernameState)
+                                        setUsernameState(e.target.value)
                                     }
                                     ref={usernameInputRef}
                                 />
@@ -141,6 +174,7 @@ const ProfileSummary = ({
                                     id="email-alerts"
                                     onChange={(e) => {
                                         setEditing((s) => !s);
+                                        setError("");
                                         setProfileImage(profile.profile.photo);
                                     }}
                                 />
@@ -173,6 +207,7 @@ const ProfileSummary = ({
                             profile.profile.description
                         ) : (
                             <Input
+                                placeholder="description"
                                 value={descriptionState}
                                 onChange={(e) =>
                                     setDescriptionState(e.target.value)

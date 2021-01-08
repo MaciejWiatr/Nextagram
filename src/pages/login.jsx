@@ -13,6 +13,7 @@ import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 import { loginUser } from "../store/slices/UserSlice";
 import Layout from "../components/Layout";
+import Validator from "../validator";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -26,6 +27,15 @@ const Login = () => {
         e.preventDefault();
         const username = usernameInputRef.current.value;
         const password = passwordInputRef.current.value;
+        const { valid, err } = Validator.validate("login", {
+            username,
+            password,
+        });
+        if (!valid) {
+            setError(err);
+            return;
+        }
+
         try {
             await dispatch(loginUser(username, password));
             toast({
@@ -45,7 +55,10 @@ const Login = () => {
     return (
         <Layout>
             <div className="w-full h-full flex flex-col justify-center items-center p-3">
-                <Box className="flex flex-col justify-center items-center text-3xl h-auto rounded shadow p-10">
+                <Box
+                    maxW="lg"
+                    className="flex flex-col justify-center items-center text-3xl h-auto rounded shadow p-10"
+                >
                     <Text className="mb-2 w-full text-left font-semibold">
                         Nextagram
                     </Text>
