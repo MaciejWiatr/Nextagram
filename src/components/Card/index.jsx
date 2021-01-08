@@ -1,4 +1,4 @@
-import { Box, Text, Divider, Input, Button, Flex } from "@chakra-ui/react";
+import { Box, Text, Divider, Input, Button } from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
@@ -11,30 +11,56 @@ import { apiURL } from "../../constants";
 
 const Card = ({ initialPost, updateParentPostList }) => {
     const [
-        { author, likes, description, image, is_liked: isLiked, id, comments },
+        {
+            author,
+            likes: initialLikes,
+            description,
+            image,
+            is_liked: isInitiallyLiked,
+            id,
+            comments,
+        },
         setPost,
     ] = useState(initialPost);
+    const [likes, setLikes] = useState(initialLikes);
+    const [isLiked, setIsLiked] = useState(isInitiallyLiked);
     const [expanded, setExpanded] = useState(false);
     const [localComments, setLocalComments] = useState(comments);
     const user = useSelector((state) => state.user);
     const commentInputRef = useRef(null);
     const [showOptions, setShowOptions] = useState(false);
 
+    const updateLikes = async () => {
+        let resp;
+        if (user.isAuthenticated) {
+            resp = await axios.get(`${apiURL}posts/${id}/likes`, {
+                headers: {
+                    Authorization: `Token ${user.token}`,
+                },
+            });
+        } else {
+            resp = await axios.get(`${apiURL}posts/${id}/likes`);
+        }
+        const { likes: likesResp, is_liked: isLikedResp } = resp.data;
+        setLikes(likesResp);
+        setIsLiked(isLikedResp);
+    };
+
     const updatePost = async () => {
         let resp;
         if (user.token) {
-            resp = await axios.get(`${apiURL}posts/${id}`, {
+            resp = await axios.get(`${apiURL}posts/${id}/`, {
                 headers: { Authorization: `Token ${user.token}` },
             });
         } else {
-            resp = await axios.get(`${apiURL}posts/${id}`);
+            resp = await axios.get(`${apiURL}posts/${id}/`);
         }
         setPost(() => resp.data);
     };
 
     const handleLike = async () => {
         const userLike = likes.filter(
-            ({ author: likeAuthor }) => likeAuthor.id === user.user.id
+            ({ author: likeAuthor }) => likeAuthor.id === user.user.id,
         );
         if (!isLiked) {
             await axios.post(
@@ -44,9 +70,8 @@ const Card = ({ initialPost, updateParentPostList }) => {
                     headers: {
                         Authorization: `Token ${user.token}`,
                     },
-                }
+                },
             );
-            updatePost();
         } else {
             const userLikeId = userLike[0].id;
             await axios.delete(`${apiURL}likes/${userLikeId}/`, {
@@ -54,29 +79,27 @@ const Card = ({ initialPost, updateParentPostList }) => {
                     Authorization: `Token ${user.token}`,
                 },
             });
-            updatePost();
         }
+        updateLikes();
     };
 
     useEffect(() => {
+        updateLikes();
         updatePost();
     }, []);
 
     const addComment = async () => {
-        const resp = await axios.post(
-            `${apiURL}comments/`,
-            {
-                message: commentInputRef.current.value,
-                post: id,
+        const data = {
+            message: commentInputRef.current.value,
+            post: id,
+        };
+        const resp = await axios.post(`${apiURL}comments/`, data, {
+            headers: {
+                Authorization: `Token ${user.token}`,
             },
-            {
-                headers: {
-                    Authorization: `Token ${user.token}`,
-                },
-            }
-        );
-        const { data } = resp;
-        setLocalComments((coms) => [...coms, data]);
+        });
+        const { data: respData } = resp;
+        setLocalComments((coms) => [...coms, respData]);
         commentInputRef.current.value = "";
     };
 
@@ -136,6 +159,7 @@ const Card = ({ initialPost, updateParentPostList }) => {
                                 <ul className="text-left font-normal">
                                     <li>
                                         <button
+                                            className="hover:text-gray-500"
                                             type="button"
                                             onClick={() => handleDelete()}
                                         >
@@ -143,7 +167,14 @@ const Card = ({ initialPost, updateParentPostList }) => {
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button">Edit</button>
+                                        <Link href={`/post/${id}`} passHref>
+                                            <a
+                                                className="hover:text-gray-500"
+                                                href="/"
+                                            >
+                                                Edit
+                                            </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -160,6 +191,7 @@ const Card = ({ initialPost, updateParentPostList }) => {
                     alt="post image"
                     layout="fill"
                     objectFit="cover"
+                    quality="60"
                 />
             </Box>
             <Box mt="2" pl="2" className="flex text-3xl">
@@ -211,12 +243,18 @@ const Card = ({ initialPost, updateParentPostList }) => {
                                   <li key={commentId}>
                                       <b>{commentAuthor.username}</b> {message}
                                   </li>
-                              )
+                              ),
                           )
                     : null}
             </ul>
             <Divider />
-            <Flex p="2">
+            <form
+                className="p-2 flex"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    addComment();
+                }}
+            >
                 <Input
                     ref={commentInputRef}
                     name="comment input"
@@ -234,7 +272,7 @@ const Card = ({ initialPost, updateParentPostList }) => {
                 >
                     Publish
                 </Button>
-            </Flex>
+            </form>
         </Box>
     );
 };
