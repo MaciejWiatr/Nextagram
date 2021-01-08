@@ -27,7 +27,7 @@ import PostGrid from "../../components/PostGrid";
 const NewPostForm = ({ updatePosts, fetchProfile }) => {
     const user = useSelector((state) => state.user);
     const formRef = useRef(null);
-    const [postImage, setPostImage] = useState();
+    const [postImage, setPostImage] = useState("");
     const postImagePreview = useRef(null);
 
     const uploadForm = async (formData) => {
@@ -57,9 +57,6 @@ const NewPostForm = ({ updatePosts, fetchProfile }) => {
 
     const loadFile = (event) => {
         setPostImage(URL.createObjectURL(event.target.files[0]));
-        postImagePreview.current.onload = () => {
-            URL.revokeObjectURL(postImagePreview.current.src); // free memory
-        };
     };
 
     return (
@@ -76,7 +73,7 @@ const NewPostForm = ({ updatePosts, fetchProfile }) => {
                         onChange={loadFile}
                     />
                 </label>
-                {postImagePreview ? (
+                {postImage !== "" ? (
                     <img
                         ref={postImagePreview}
                         src={postImage}
@@ -235,7 +232,7 @@ const Profile = ({ initialProfile, posts: initialPosts }) => {
 };
 
 export async function getServerSideProps(context) {
-    context.res.setHeader("Cache-Control", "s-maxage=10");
+    context.res.setHeader("Cache-Control", "s-maxage=20");
     const { userId } = context.query;
 
     console.time("SSR Profile Fetch");
