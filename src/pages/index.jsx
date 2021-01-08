@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Input, Button, Spinner } from "@chakra-ui/react";
 import { BiSearchAlt } from "react-icons/bi";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import Layout from "../components/Layout";
 import Card from "../components/Card";
 import { fetchPosts } from "../store/slices/PostSlice";
@@ -11,12 +11,11 @@ export default function Home() {
     const posts = useSelector((state) => state.posts.postList);
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
-    const router = useRouter();
     const [inputVal, setInputVal] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSearch = () => {
-        router.push(`/search/?q=${inputVal}`);
+        Router.push(`/search/?q=${inputVal}`);
     };
 
     const updatePosts = async () => {
@@ -43,7 +42,8 @@ export default function Home() {
                     ))
                 ) : (
                     <div className="text-center flex flex-col items-center justify-center">
-                        {user.user.profile.follows.length > 0 ? (
+                        {!user.isAuthenticated ||
+                        user.user.profile.follows.length > 0 ? (
                             <p>No posts found</p>
                         ) : (
                             <div className="flex flex-col items-center justify-center w-1/2">
@@ -57,8 +57,11 @@ export default function Home() {
                                     />
                                     <Button
                                         className="ml-1"
-                                        type="button"
-                                        onClick={() => handleSearch()}
+                                        type="submit"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleSearch();
+                                        }}
                                     >
                                         <BiSearchAlt />
                                     </Button>
