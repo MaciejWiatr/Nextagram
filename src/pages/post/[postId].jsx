@@ -7,7 +7,6 @@ import { apiURL } from "../../constants";
 
 const PostDetailPage = ({ initialPost }) => {
     const [post, setPost] = useState(initialPost);
-    const user = useSelector((state) => state.user.user);
     return (
         <Layout>
             <div className="flex w-full h-full justify-center items-center p-2">
