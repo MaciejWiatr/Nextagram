@@ -16,6 +16,9 @@ const PostDetail = ({ initialPost }) => {
     const [localComments, setLocalComments] = useState(comments);
     const user = useSelector((state) => state.user);
     const commentInputRef = useRef(null);
+    const [editing, setEditing] = useState(false);
+    const [isAuthor, setIsAuthor] = useState(user.user.id === author.id);
+    const [descriptionValue, setDescriptionValue] = useState(description);
 
     const updatePost = async () => {
         let resp;
@@ -31,7 +34,7 @@ const PostDetail = ({ initialPost }) => {
 
     const handleLike = async () => {
         const userLike = likes.filter(
-            ({ author: likeAuthor }) => likeAuthor.id === user.user.id
+            ({ author: likeAuthor }) => likeAuthor.id === user.user.id,
         );
         if (!isLiked) {
             await axios.post(
@@ -41,7 +44,7 @@ const PostDetail = ({ initialPost }) => {
                     headers: {
                         Authorization: `Token ${user.token}`,
                     },
-                }
+                },
             );
             await updatePost();
         } else {
@@ -69,7 +72,7 @@ const PostDetail = ({ initialPost }) => {
                 headers: {
                     Authorization: `Token ${user.token}`,
                 },
-            }
+            },
         );
         const { data } = resp;
         setLocalComments((coms) => [...coms, data]);
@@ -81,39 +84,83 @@ const PostDetail = ({ initialPost }) => {
         addComment();
     };
 
+    const handleEdit = async () => {
+        await axios.patch(
+            `${apiURL}posts/${id}/`,
+            {
+                description: descriptionValue,
+            },
+            {
+                headers: { Authorization: `Token ${user.token}` },
+            },
+        );
+        await updatePost();
+        setEditing(false);
+    };
+
     useEffect(() => {
         updatePost();
     }, []);
 
+    useEffect(() => {
+        setIsAuthor(user.user.id === author.id);
+    }, [user.isAuthenticated]);
+
     return (
         <Box className="shadow-lg rounded md:overflow-hidden relative w-full md:w-3/4 max-w-5xl bg-white flex flex-col items-stretch md:flex-row md:justify-center  md:h-2/3 border">
-            <PostImage
+            <PostDetailImage
                 handleLike={handleLike}
                 image={image}
                 className="flex-grow"
             />
-            <Box className="flex flex-col border-l w-full md:w-2/3">
-                <Box className="w-full p-2">
+            <Box className="flex flex-col border-l w-full md:max-w-sm md:w-2/3">
+                <Box className="w-full p-2 flex justify-between items-center">
                     <Link href={`/profile/${author.id}`}>
                         <a
-                            className="flex flex-row justify-start items-center p-2"
+                            className="flex flex-row justify-between items-center p-2"
                             href="/"
                         >
-                            <Image
-                                src={author.profile.photo}
-                                width="30"
-                                height="30"
-                                className="rounded-full"
-                                alt="user image"
-                            />
-                            <Text className="ml-2">{author.username}</Text>
+                            <div className="flex items-center">
+                                <Image
+                                    src={author.profile.photo}
+                                    width="30"
+                                    height="30"
+                                    className="rounded-full"
+                                    alt="user image"
+                                />
+                                <Text className="ml-2">{author.username}</Text>
+                            </div>
                         </a>
                     </Link>
+                    {isAuthor ? (
+                        <div>
+                            {editing ? (
+                                <Button onClick={() => handleEdit()}>
+                                    Save
+                                </Button>
+                            ) : (
+                                <Button onClick={() => setEditing((s) => !s)}>
+                                    Edit
+                                </Button>
+                            )}
+                        </div>
+                    ) : null}
                 </Box>
                 <Divider />
-                <Text pl="2" fontSize=".9rem" className="pt-2 pb-2">
+                <Text pl="2" pr="2" fontSize=".9rem" className="pt-2 pb-2">
                     <b>{author.username} </b>
-                    {description}
+                    <div>
+                        {editing && isAuthor ? (
+                            <Input
+                                value={descriptionValue}
+                                onChange={(e) =>
+                                    setDescriptionValue(e.target.value)
+                                }
+                            />
+                        ) : (
+                            description
+                        )}
+                    </div>
                 </Text>
                 <Divider />
                 <b className="text-sm p-2 pb-1">Comments:</b>
@@ -128,7 +175,7 @@ const PostDetail = ({ initialPost }) => {
                                   <li key={commentId}>
                                       <b>{commentAuthor.username}</b> {message}
                                   </li>
-                              )
+                              ),
                           )
                         : null}
                 </ul>
@@ -178,7 +225,7 @@ const PostDetail = ({ initialPost }) => {
 
 export default PostDetail;
 
-function PostImage({ handleLike, image }) {
+function PostDetailImage({ handleLike, image }) {
     return (
         <div className="flex flex-col md:h-full border-b md:border-none w-full h-56">
             <Box
@@ -189,7 +236,8 @@ function PostImage({ handleLike, image }) {
                     src={image}
                     alt="post image"
                     layout="fill"
-                    objectFit="cover"
+                    objectFit="contain"
+                    objectPosition="center"
                 />
             </Box>
         </div>
