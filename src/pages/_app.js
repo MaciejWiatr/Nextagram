@@ -11,6 +11,7 @@ import { loadProgressBar } from "axios-progress-bar";
 import makeStore from "../store";
 import "../styles/globals.css";
 import "../styles/vendor/progressBar.css";
+import "animate.css";
 
 if (typeof window === "undefined") {
     const ServerCookies = require("cookies");
