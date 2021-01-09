@@ -47,7 +47,7 @@ const Login = () => {
                 isClosable: true,
             });
             router.push("/");
-        } catch (err) {
+        } catch {
             setError("Login has failed");
         }
     };
@@ -100,11 +100,5 @@ const Login = () => {
         </Layout>
     );
 };
-
-export async function getStaticProps() {
-    return {
-        props: {},
-    };
-}
 
 export default Login;

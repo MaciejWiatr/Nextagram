@@ -50,7 +50,7 @@ const Register = () => {
                 isClosable: true,
             });
             router.push("/login");
-        } catch (err) {
+        } catch {
             setError("Registration has failed");
         }
     };
@@ -107,11 +107,5 @@ const Register = () => {
         </Layout>
     );
 };
-
-export async function getStaticProps() {
-    return {
-        props: {},
-    };
-}
 
 export default Register;
