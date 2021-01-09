@@ -3,7 +3,8 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { apiURL } from "../constants";
 import Layout from "../components/Layout";
-import Card from "../components/Card";
+import PostList from "../components/PostList";
+import Router from "next/router";
 
 const Liked = () => {
     const user = useSelector((state) => state.user);
@@ -16,17 +17,21 @@ const Liked = () => {
     };
 
     useEffect(() => {
+        if (!user.isAuthenticated) {
+            Router.push("/login/");
+            return;
+        }
         fetchLiked();
     }, []);
 
     return (
         <Layout>
             <div className="w-full flex justify-center flex-col items-center pl-2 pr-2 pb-3">
-                {likedPosts.length > 0
-                    ? likedPosts.map((post) => (
-                          <Card key={post.id} initialPost={post} />
-                      ))
-                    : "No posts found"}
+                {likedPosts.length > 0 ? (
+                    <PostList posts={likedPosts} />
+                ) : (
+                    "No posts found"
+                )}
             </div>
         </Layout>
     );
