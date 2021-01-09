@@ -1,12 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import Layout from "../../components/Layout";
 import PostDetail from "../../components/PostDetail";
 import { apiURL } from "../../constants";
 
 const PostDetailPage = ({ initialPost }) => {
-    const [post, setPost] = useState(initialPost);
+    const [post] = useState(initialPost);
     return (
         <Layout>
             <div className="flex w-full h-full justify-center items-center p-2">
