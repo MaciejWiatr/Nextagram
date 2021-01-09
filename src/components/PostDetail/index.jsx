@@ -1,30 +1,55 @@
-import { Box, Text, Divider, Input, Button } from "@chakra-ui/react";
+import {
+    Box,
+    Text,
+    Divider,
+    Input,
+    Button,
+    CloseButton,
+} from "@chakra-ui/react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import { BiHeart, BiMessageRounded } from "react-icons/bi";
-import { useSelector } from "react-redux";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import { apiURL } from "../../constants";
+import useLikes from "../../hooks/useLikes";
+import useUser from "../../hooks/useUser";
+import useComments from "../../hooks/useComments";
 
 const PostDetail = ({ initialPost }) => {
     const [
-        { author, likes, description, image, is_liked: isLiked, id, comments },
+        {
+            author,
+            likes: initialLikes,
+            description,
+            image,
+            is_liked: isInitiallyLiked,
+            id,
+            comments: initialComments,
+        },
         setPost,
     ] = useState(initialPost);
-    const [localComments, setLocalComments] = useState(comments);
-    const user = useSelector((state) => state.user);
+    const [likes, isLiked, addLike, updateLikes] = useLikes(
+        initialLikes,
+        isInitiallyLiked,
+        id,
+    );
+    const [comments, addComment, deleteComment] = useComments(
+        initialComments,
+        id,
+    );
+    const [user, isAuthenticated, token] = useUser();
     const commentInputRef = useRef(null);
     const [editing, setEditing] = useState(false);
-    const [isAuthor, setIsAuthor] = useState(user.user.id === author.id);
+    const [isAuthor, setIsAuthor] = useState(user.id === author.id);
     const [descriptionValue, setDescriptionValue] = useState(description);
 
     const updatePost = async () => {
         let resp;
-        if (user.token) {
+        if (token) {
             resp = await axios.get(`${apiURL}posts/${id}`, {
-                headers: { Authorization: `Token ${user.token}` },
+                headers: { Authorization: `Token ${token}` },
             });
         } else {
             resp = await axios.get(`${apiURL}posts/${id}`);
@@ -32,56 +57,9 @@ const PostDetail = ({ initialPost }) => {
         setPost(() => resp.data);
     };
 
-    const handleLike = async () => {
-        const userLike = likes.filter(
-            ({ author: likeAuthor }) => likeAuthor.id === user.user.id,
-        );
-        if (!isLiked) {
-            await axios.post(
-                `${apiURL}likes/`,
-                { post: id },
-                {
-                    headers: {
-                        Authorization: `Token ${user.token}`,
-                    },
-                },
-            );
-            await updatePost();
-        } else {
-            const userLikeId = userLike[0].id;
-            await axios.delete(`${apiURL}likes/${userLikeId}/`, {
-                headers: {
-                    Authorization: `Token ${user.token}`,
-                },
-            });
-            await updatePost();
-        }
-    };
-
-    const addComment = async () => {
-        if (commentInputRef.current.value === "") {
-            return;
-        }
-        const resp = await axios.post(
-            `${apiURL}comments/`,
-            {
-                message: commentInputRef.current.value,
-                post: id,
-            },
-            {
-                headers: {
-                    Authorization: `Token ${user.token}`,
-                },
-            },
-        );
-        const { data } = resp;
-        setLocalComments((coms) => [...coms, data]);
-        commentInputRef.current.value = "";
-    };
-
     const onCommentSubmit = (e) => {
         e.preventDefault();
-        addComment();
+        addComment(commentInputRef.current.value);
     };
 
     const handleEdit = async () => {
@@ -91,7 +69,7 @@ const PostDetail = ({ initialPost }) => {
                 description: descriptionValue,
             },
             {
-                headers: { Authorization: `Token ${user.token}` },
+                headers: { Authorization: `Token ${token}` },
             },
         );
         await updatePost();
@@ -100,16 +78,17 @@ const PostDetail = ({ initialPost }) => {
 
     useEffect(() => {
         updatePost();
+        updateLikes();
     }, []);
 
     useEffect(() => {
-        setIsAuthor(user.user.id === author.id);
-    }, [user.isAuthenticated]);
+        setIsAuthor(user.id === author.id);
+    }, [isAuthenticated]);
 
     return (
         <Box className="shadow-lg rounded md:overflow-hidden relative w-full md:w-3/4 max-w-5xl bg-white flex flex-col items-stretch md:flex-row md:justify-center  md:h-2/3 border">
             <PostDetailImage
-                handleLike={handleLike}
+                handleLike={addLike}
                 image={image}
                 className="flex-grow"
             />
@@ -147,9 +126,15 @@ const PostDetail = ({ initialPost }) => {
                     ) : null}
                 </Box>
                 <Divider />
-                <Text pl="2" pr="2" fontSize=".9rem" className="pt-2 pb-2">
+                <Text
+                    as="div"
+                    pl="2"
+                    pr="2"
+                    fontSize=".9rem"
+                    className="pt-2 pb-2"
+                >
                     <b>{author.username} </b>
-                    <div>
+                    <p>
                         {editing && isAuthor ? (
                             <Input
                                 value={descriptionValue}
@@ -160,20 +145,44 @@ const PostDetail = ({ initialPost }) => {
                         ) : (
                             description
                         )}
-                    </div>
+                    </p>
                 </Text>
                 <Divider />
                 <b className="text-sm p-2 pb-1">Comments:</b>
                 <ul className="p-2 pt-0 text-sm flex-grow overflow-y-scroll">
-                    {localComments
-                        ? localComments.map(
+                    {comments
+                        ? comments.map(
                               ({
                                   author: commentAuthor,
                                   message,
                                   id: commentId,
                               }) => (
-                                  <li key={commentId}>
-                                      <b>{commentAuthor.username}</b> {message}
+                                  <li
+                                      key={commentId}
+                                      className="w-full relative flex justify-between items-center"
+                                  >
+                                      <div className="">
+                                          <Link
+                                              href={`/profile/${commentAuthor.id}`}
+                                              passHref
+                                          >
+                                              <a
+                                                  href="/"
+                                                  className="font-bold hover:text-gray-600"
+                                              >
+                                                  {commentAuthor.username}
+                                              </a>
+                                          </Link>{" "}
+                                          {message}
+                                      </div>
+                                      {commentAuthor.id === user.id ? (
+                                          <CloseButton
+                                              size="xs"
+                                              onClick={() =>
+                                                  deleteComment(commentId)
+                                              }
+                                          />
+                                      ) : null}
                                   </li>
                               ),
                           )
@@ -184,8 +193,8 @@ const PostDetail = ({ initialPost }) => {
                     <button
                         name="heart button"
                         className="mr-2"
-                        onClick={handleLike}
-                        disabled={!user.isAuthenticated}
+                        onClick={addLike}
+                        disabled={!isAuthenticated}
                         type="button"
                     >
                         {isLiked ? <FaHeart fill="#c0392b" /> : <BiHeart />}
@@ -206,14 +215,14 @@ const PostDetail = ({ initialPost }) => {
                         placeholder="Write comment"
                         border="none"
                         mr="1"
-                        disabled={!user.isAuthenticated}
+                        disabled={!isAuthenticated}
                     />
                     <Button
                         name="button publish"
                         onClick={() => {
-                            addComment();
+                            addComment(commentInputRef.current.value);
                         }}
-                        disabled={!user.isAuthenticated}
+                        disabled={!isAuthenticated}
                     >
                         Publish
                     </Button>
