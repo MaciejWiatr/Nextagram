@@ -1,5 +1,7 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import Image from "next/image";
-import { useState } from "react";
+import React, { useState } from "react";
 import { BiHeart, BiMessageRounded } from "react-icons/bi";
 import Modal from "react-modal";
 import Card from "../Card";
@@ -7,8 +9,7 @@ import styles from "./index.module.scss";
 
 Modal.setAppElement("#modal");
 
-const PostGrid = ({ posts, updateParentPostList }) => {
-    return (
+const PostGrid = ({ posts, updateParentPostList }) => (
         <div className={`w-full post__grid mt-2 mb-2 ${styles.post__grid}`}>
             {posts
                 ? posts.map((post) => (
@@ -21,7 +22,6 @@ const PostGrid = ({ posts, updateParentPostList }) => {
                 : "This user has no posts"}
         </div>
     );
-};
 
 const PostGridElement = ({ post, updateParentPostList }) => {
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -31,6 +31,7 @@ const PostGridElement = ({ post, updateParentPostList }) => {
     };
     function closeModal() {
         setIsOpen(false);
+        updateParentPostList();
     }
 
     return (
