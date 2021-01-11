@@ -1,30 +1,44 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center">Welcome to Nextagram 👋</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
+  <a href="#" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+</p>
 
-## Getting Started
+> Nextagram is a instagram clone written in Next.js and Django Rest Framework
 
-First, run the development server:
+> To start this project locally you need [Backend](https://github.com/MaciejWiatr/DRF-Instagram-Clone/tree/develop) running in the background
 
-```bash
-npm run dev
-# or
-yarn dev
+### 🏠 [Homepage](https://nextagram.vercel.app/)
+
+## Install
+
+```sh
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```sh
+npm run dev
+```
 
-## Learn More
+## Author
 
-To learn more about Next.js, take a look at the following resources:
+👤 **Maciej Wiatr**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* Website: wiatr.tech
+* Github: [@MaciejWiatr](https://github.com/MaciejWiatr)
+* LinkedIn: [@maciej-wiatr](https://linkedin.com/in/maciej-wiatr)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 🤝 Contributing
 
-## Deploy on Vercel
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/MaciejWiatr/Nextagram/issues). 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Show your support
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Give a ⭐️ if this project helped you!
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
