@@ -30,7 +30,7 @@ const PostDetail = ({ initialPost }) => {
         },
         setPost,
     ] = useState(initialPost);
-    const [likes, isLiked, addLike, updateLikes] = useLikes(
+    const [, isLiked, numberOfLikes, addLike, updateLikes] = useLikes(
         initialLikes,
         isInitiallyLiked,
         id,
@@ -193,7 +193,7 @@ const PostDetail = ({ initialPost }) => {
                     <button
                         name="heart button"
                         className="mr-2"
-                        onClick={addLike}
+                        onClick={() => addLike()}
                         disabled={!isAuthenticated}
                         type="button"
                     >
@@ -204,8 +204,8 @@ const PostDetail = ({ initialPost }) => {
                     </button>
                 </Box>
                 <Text pl="2" pb="1">
-                    {likes.length} Like
-                    {likes.length > 1 ? "s" : ""}
+                    {numberOfLikes} Like
+                    {numberOfLikes > 1 ? "s" : ""}
                 </Text>
                 <Divider />
                 <form className="flex p-2" onSubmit={onCommentSubmit}>
