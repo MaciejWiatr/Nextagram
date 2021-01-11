@@ -1,12 +1,16 @@
 import { Input, Button } from "@chakra-ui/react";
+import { useRef } from "react";
 
-const CardCommentForm = ({ user, addComment, commentInputRef }) => {
+const CardCommentForm = ({ user, addComment }) => {
+    const commentInputRef = useRef(null);
+
     return (
         <form
             className="p-2 flex"
             onSubmit={(e) => {
                 e.preventDefault();
-                addComment();
+                addComment(commentInputRef.current.value);
+                e.target.reset();
             }}
         >
             <Input
@@ -20,7 +24,7 @@ const CardCommentForm = ({ user, addComment, commentInputRef }) => {
             <Button
                 name="button publish"
                 onClick={() => {
-                    addComment();
+                    addComment(commentInputRef.current.value);
                 }}
                 disabled={!user.isAuthenticated}
             >

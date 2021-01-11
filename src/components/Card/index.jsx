@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import { BiHeart, BiMessageRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { apiURL } from "../../constants";
 import CardImage from "../CardImage";
 import CardHeader from "../CardHeader";
@@ -12,6 +12,7 @@ import CardCommentForm from "../CardCommentForm";
 import CardDescription from "../CardDescription";
 import CommentList from "../CommentList";
 import useLikes from "../../hooks/useLikes";
+import useComments from "../../hooks/useComments";
 
 const Card = ({ initialPost, updateParentPostList }) => {
     const [
@@ -22,19 +23,18 @@ const Card = ({ initialPost, updateParentPostList }) => {
             image,
             is_liked: isInitiallyLiked,
             id,
-            comments,
+            comments: initialComments,
         },
         setPost,
     ] = useState(initialPost);
-    const [likes, isLiked, numberOfLikes, addLike, updateLikes] = useLikes(
+    const [, isLiked, numberOfLikes, addLike, updateLikes] = useLikes(
         initialLikes,
         isInitiallyLiked,
         id,
     );
     const [expanded, setExpanded] = useState(false);
-    const [localComments, setLocalComments] = useState(comments);
+    const [comments, addComment] = useComments(initialComments, id);
     const user = useSelector((state) => state.user);
-    const commentInputRef = useRef(null);
     const [showOptions, setShowOptions] = useState(false);
 
     const updatePost = async () => {
@@ -47,21 +47,6 @@ const Card = ({ initialPost, updateParentPostList }) => {
             resp = await axios.get(`${apiURL}posts/${id}/`);
         }
         setPost(() => resp.data);
-    };
-
-    const addComment = async () => {
-        const data = {
-            message: commentInputRef.current.value,
-            post: id,
-        };
-        const resp = await axios.post(`${apiURL}comments/`, data, {
-            headers: {
-                Authorization: `Token ${user.token}`,
-            },
-        });
-        const { data: respData } = resp;
-        setLocalComments((coms) => [...coms, respData]);
-        commentInputRef.current.value = "";
     };
 
     const handleDelete = async () => {
@@ -81,7 +66,6 @@ const Card = ({ initialPost, updateParentPostList }) => {
 
     const handleLike = async () => {
         await addLike();
-        updateParentPostList();
     };
 
     useEffect(() => {
@@ -142,13 +126,9 @@ const Card = ({ initialPost, updateParentPostList }) => {
                     See all comments
                 </a>
             </Link>
-            <CommentList comments={localComments} />
+            <CommentList comments={comments} />
             <Divider />
-            <CardCommentForm
-                user={user}
-                addComment={addComment}
-                commentInputRef={commentInputRef}
-            />
+            <CardCommentForm user={user} addComment={addComment} />
         </Box>
     );
 };
