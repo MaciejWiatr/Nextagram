@@ -165,7 +165,6 @@ export async function getServerSideProps(context) {
     context.res.setHeader("Cache-Control", "s-maxage=20");
     const { userId } = context.query;
 
-    console.time("SSR Profile Fetch");
     const urls = [
         `${apiURL}accounts/users/${userId}`,
         `${apiURL}posts/?author__id=${userId}`,
@@ -174,7 +173,6 @@ export async function getServerSideProps(context) {
         urls.map((url) => fetch(url)),
     ).then((resp) => Promise.all(resp.map((r) => r.json())));
 
-    console.timeEnd("SSR Profile Fetch");
     const profile = profileResp;
     const posts = postsResp;
 

@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import Router from "next/router";
 import { apiURL } from "../constants";
 import Layout from "../components/Layout";
 import PostList from "../components/PostList";
-import Router from "next/router";
 
 const Liked = () => {
     const user = useSelector((state) => state.user);
